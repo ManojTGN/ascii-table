@@ -28,13 +28,15 @@ ascii [characters...] [..options]
 ```
 
 #### Available Options:
-    `--all`     shows all available ascii codes\
-    `--digits`  shows all digits ascii codes\
+    `--all`     shows all available ascii codes
+    `--digits`  shows all digits ascii codes
     `--alphas`  shows all alphabets ascii codes
     
-    `--octa`    shows only octa in output table\
-    `--dec`     shows only dec in output table\
+    `--octa`    shows only octa in output table
+    `--dec`     shows only dec in output table
     `--hex`     shows only hex in output table
     
-    `--asc`     shows output table in ascending order\
+    `--asc`     shows output table in ascending order
     `--des`     shows output table in desending order
+    
+    `--vt100`   register ansi vt100 escape sequence color to the terminal & terminate
