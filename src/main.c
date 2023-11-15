@@ -11,19 +11,21 @@
 
 typedef struct parameter{
 
-    bool showAll;         //--all  shows all available ascii codes
-    bool showAllDigits;   //--digits  shows all digits ascii codes
-    bool showAllAlphas;   //--alphas  shows all alphabets ascii codes
+    bool showAll;           //--all  shows all available ascii codes
+    bool showAllDigits;     //--digits  shows all digits ascii codes
+    bool showAllAlphas;     //--alphas  shows all alphabets ascii codes
 
-    bool onlyOct;      //--octa  shows only octa in output table
-    bool onlyDec;      //--dec  shows only dec in output table
-    bool onlyHex;      //--hex  shows only hex in output table
-    bool onlyChar;     //
-    bool _onlyAll;     // if all only* 4 are false this will be set to true
+    bool onlyOct;           //--octa  shows only octa in output table
+    bool onlyDec;           //--dec  shows only dec in output table
+    bool onlyHex;           //--hex  shows only hex in output table
+
+    bool onlyChar;          // hardcoded and set to true(1) always shows `chr` column
+    bool _onlyAll;          // if all only* 3 are false this will be set to true
     
-    char* content;     // " " content / data 
+    char* content;          // " " content / data (user input)
     
-    uint8_t order;     //0 - default , 1 - ascending, 3 - desending ordered output table
+    uint8_t order;          //0 - default , (--asc)1 - ascending, (--des)2 - desending ordered output table
+    bool color;             //--vt100 register ansi vt100 escape sequence color to the terminal
 
 }asciiParams;
 
@@ -92,6 +94,8 @@ asciiParams parseParameter(int argv, char** args){
         else if(strcmp(args[i],"--asc")==0) params.order = 1;
         else if(strcmp(args[i],"--des")==0) params.order = 2;
 
+        else if(strcmp(args[i],"--vt100")==0) params.color = true;
+
     }
 
     params.onlyChar = 1; //hardcoded;
@@ -129,7 +133,7 @@ void manipulateData(asciiParams *params){
 }
 
 void printData(asciiParams params){
-    
+
     size_t s = 0;char se_line[20] = "";
     if(params._onlyAll) printf("Oct  Dec  Hex  "YEL"Chr"RESET"\n------------------\n");
     else{
@@ -165,6 +169,11 @@ int main(int argv, char** args){
     }
 
     asciiParams params = parseParameter(argv, args);
+
+    if(params.color){
+        system("REG ADD HKCU\\CONSOLE /f /v VirtualTerminalLevel /t REG_DWORD /d 1");
+        return 0;
+    }
 
     if(params.showAll){
         splashScreen();
