@@ -6,8 +6,8 @@
 
 #define MAX_COL 4
 #define MAX_ROW 32
-#define YEL     "\x1B[33m"
-#define RESET   "\x1B[0m"
+#define YEL     "\x1b[33m"
+#define RESET   "\x1b[0m"
 
 typedef struct parameter{
 
@@ -29,7 +29,7 @@ typedef struct parameter{
 
 
 void splashScreen(){
-    printf("  ascii - ASCII character set encoded in octal, decimal, and hexadecimal\n\n"
+    printf("ascii - ASCII character set encoded in octal, decimal, and hexadecimal\n\n"
            "Oct  Dec  Hex  "YEL"Chr"RESET"                          |  Oct  Dec  Hex  "YEL"Chr"RESET"   |  Oct  Dec  Hex  "YEL"Chr"RESET" |  Oct  Dec  Hex  "YEL"Chr"RESET"\n"
            "--------------------------------------------+-----------------------+---------------------+--------------------\n"
            "000    0   00  "YEL"NUL (null)"RESET"                   |  040   32   20  "YEL"SPACE"RESET" |  100   64   40  "YEL"@"RESET"   |  140   96   60  "YEL"`"RESET"\n"
@@ -103,22 +103,28 @@ asciiParams parseParameter(int argv, char** args){
 
 static int ascCmp(const void* a, const void* b){return *(char *)a > *(char *)b;}
 static int desCmp(const void* a, const void* b){return *(char *)a < *(char *)b;}
-void manipulateData(asciiParams params){
+void manipulateData(asciiParams *params){
 
-    char occur[256] = {0};int i;
-    for(i = 0; i < strlen(params.content); i++){
-        if(occur[params.content[i]]){
-            memmove(&params.content[i],  &params.content[i+1], strlen(params.content) - i);
-            i--;
-        }else occur[params.content[i]] = 1;
-        
+    char occur[256] = {0};int i;int idx = 0;
+
+    for(i = 0; i < strlen(params->content); i++){
+        if(!occur[params->content[i]]){
+            if(idx != i){
+                params->content[idx] = params->content[i];
+            }
+
+            idx++;
+            occur[params->content[i]] = 1;
+        }
     }
-    params.content[i] = '\0';
+    
+    char* tmp = (char *)malloc((idx) * sizeof(char));
+    strncpy(tmp, params->content, idx);tmp[idx] = '\0';
+    params->content = tmp;
 
-
-    if(params.order){
-        if(params.order == 1) qsort(params.content, strlen(params.content), sizeof(char), ascCmp);
-        else qsort(params.content, strlen(params.content), sizeof(char), desCmp);
+    if(params->order){
+        if(params->order == 1) qsort(params->content, strlen(params->content), sizeof(char), ascCmp);
+        else qsort(params->content, strlen(params->content), sizeof(char), desCmp);
     }
 }
 
@@ -163,8 +169,10 @@ int main(int argv, char** args){
     if(params.showAll){
         splashScreen();
         return 0;
+    }else if(params.showAllAlphas && params.showAllDigits){
+        params.content = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     }else if(params.showAllAlphas){
-        params.content = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        params.content = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     }else if(params.showAllDigits){
         params.content = "0123456789";
     }
@@ -172,11 +180,10 @@ int main(int argv, char** args){
     //@todo: print the data first in the center
     //       and then print the table output ..
 
-    // testing params: will be removed on release
-    // printf("showAll:%i showAllAlphas:%i showAllDigits:%i onlyOct:%i onlyDec:%i onlyHex:%i onlyChar:%i;\ncontent: %s\n\n",params.showAll, params.showAllAlphas, params.showAllDigits, params.onlyOct, params.onlyDec, params.onlyHex, params.onlyChar, params.content);
-
-    manipulateData(params);
+    manipulateData(&params);
     printData(params);
+
+    // free(params.content);
 
     return 0;
 }
