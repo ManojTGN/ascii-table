@@ -10,6 +10,10 @@ AsciiTable shows octal, hexadecimal, and decimal representations of ascii charac
 - Supports the full range of 256 ASCII characters.
 
 ## Installation
+### Release
+Visit [Releases](https://github.com/ManojTGN/ascii-table/releases) And Download The latest `ascii` Binary from it. then add it to the environment variable.
+
+### Build
 ```bash
 git clone https://github.com/ManojTGN/ascii-table.git
 cd ascii-table
