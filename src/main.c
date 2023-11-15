@@ -180,10 +180,13 @@ int main(int argv, char** args){
     //@todo: print the data first in the center
     //       and then print the table output ..
 
+    if(params.content == NULL){
+        printf("ascii: No Data Is Found; Output Table Is Empty;");
+        return 0;
+    }
+
     manipulateData(&params);
     printData(params);
-
-    // free(params.content);
 
     return 0;
 }
