@@ -294,8 +294,6 @@ int main(int argv, char** args){
         return 0;
     }
 
-    printf("%s %d\n",params.content, params.contentSize);
-
     manipulateData(&params);
     printData(params);
 
