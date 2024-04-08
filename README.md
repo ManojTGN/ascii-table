@@ -31,12 +31,46 @@ ascii [characters...] [..options]
     `--all`     shows all available ascii codes
     `--digits`  shows all digits ascii codes
     `--alphas`  shows all alphabets ascii codes
+    `--specials`shows all special char ascii codes
+    `--controls`shows all control ascii codes (non printables)
     
     `--octa`    shows only octa in output table
     `--dec`     shows only dec in output table
     `--hex`     shows only hex in output table
     
     `--asc`     shows output table in ascending order
-    `--des`     shows output table in desending order
+    `--desc`    shows output table in desending order
     
     `--vt100`   register ansi vt100 escape sequence color to the terminal & terminate
+
+#### Input Types:
+    `0000b`  represents 0 in binary  (add b  at last)
+    `0d`     represents 0 in decimal (add d  at last)
+    `0o`     represents 0 in octal   (add o  at last)
+    `0x00`   represents 0 in hexa    (add 0x at first)
+
+#### Examples
+```bash
+ascii abcd
+ascii "manojtgn"
+ascii "helloworld"
+
+ascii "make it ascending"  --asc
+ascii "make it descending" --desc
+
+ascii 0x78
+ascii 0x78 69d
+ascii 0x78 15c 69d 01001001b
+
+ascii --alphas
+ascii --digits --specials
+ascii --digits --alphas --specials --controls
+ascii --all
+
+ascii "show octal & decimal" --oct --dec
+ascii "show only hex" --hex
+
+ascii --vt100
+
+ascii
+```
