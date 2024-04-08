@@ -124,12 +124,13 @@ asciiParams parseParameter(int argv, char** args){
 
                 args[i][0] = number;
                 args[i][1] = '\0';
-            }
+                params.contentSize++;
+            }else params.contentSize += strlen(args[i]);
+
 
             if(params.content == NULL) params.content = (uint8_t*)args[i];
             else strcat(params.content,(uint8_t*) args[i]);
             
-            params.contentSize++;
             continue;
         }
 
@@ -166,7 +167,7 @@ static int ascCmp(const void* a, const void* b){return *(char *)a > *(char *)b;}
 static int desCmp(const void* a, const void* b){return *(char *)a < *(char *)b;}
 void manipulateData(asciiParams *params){
 
-    char occur[256] = {0};int i;int idx = 0;
+    uint8_t occur[256] = {0};int i;int idx = 0;
     for(i = 0; i < params->contentSize; i++){
         if(!occur[params->content[i]]){
             if(idx != i){
@@ -177,8 +178,8 @@ void manipulateData(asciiParams *params){
             occur[params->content[i]] = 1;
         }
     }
-    
-    char* tmp = (char *)malloc((idx) * sizeof(char));
+
+    uint8_t* tmp = (uint8_t *)calloc(idx ,sizeof(uint8_t));
     params->contentSize = idx;
 
     strncpy(tmp, params->content, idx);tmp[idx] = '\0';
@@ -199,7 +200,7 @@ void printData(asciiParams params){
     size_t s = 0;
 
     for(uint8_t i = 0; i < row; i++)
-        lines[i] = (char*)calloc(200,sizeof(char));
+        lines[i] = (char*)calloc(300,sizeof(char));
 
     while(params.contentSize - s){
         char tmp[20];
@@ -236,7 +237,7 @@ void printData(asciiParams params){
     }printf("\n"RESET);
 
     for(uint8_t i = 0; i < row; i++){
-        printf("%s\n",lines[i]);
+        printf("%s\n"RESET,lines[i]);
     }printf(RESET);
 
     for(uint8_t i = 1; i <=  colLineLength*col; i++){
@@ -267,19 +268,22 @@ int main(int argv, char** args){
     }
     
     uint16_t mem = params.showAllAlphas + params.showAllDigits + params.showSpecialChars + params.showControlChars;
-
+    
     if(mem){
-        uint8_t* cpy = (uint8_t*) calloc(strlen(params.content),sizeof(uint8_t));
+        uint8_t* cpy = (uint8_t*) calloc(params.contentSize,sizeof(uint8_t));
         strcpy(cpy,params.content);
+        // cpy[params.contentSize] = '\0';
 
-        params.content = (uint8_t*) calloc(mem+strlen(cpy)+1, sizeof(uint8_t));
+        params.content = (uint8_t*) calloc(mem+params.contentSize+1, sizeof(uint8_t));
         strcat(params.content, cpy);
+        free(cpy);
 
         if(params.showAllAlphas)    strcat(params.content,"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
         if(params.showAllDigits)    strcat(params.content,"0123456789");
         if(params.showSpecialChars) strcat(params.content," !\"#$%%&\'()*+,-./:;<=>?@[\\]^_`{|}~");
         if(params.showControlChars) ;
-
+        
+        params.contentSize += mem;
     }
 
     //@todo: print the data first in the center
@@ -290,7 +294,9 @@ int main(int argv, char** args){
         return 0;
     }
 
+    printf("%s  %d\n",params.content,params.contentSize);
     manipulateData(&params);
+    printf("%s %d\n",params.content,params.contentSize);
     printData(params);
 
     return 0;
