@@ -139,7 +139,7 @@ asciiParams parseParameter(int argv, char** args){
         else if(strcmp(args[i],"--alphas") == 0) params.showAllAlphas = 52;
 
         else if(strcmp(args[i],"--controls") == 0) params.showControlChars = 0;
-        else if(strcmp(args[i],"--specials") == 0) params.showSpecialChars = 35;
+        else if(strcmp(args[i],"--specials") == 0) params.showSpecialChars = 34;
 
         else if(strcmp(args[i],"--oct") == 0) params.onlyOct = true;
         else if(strcmp(args[i],"--dec") == 0) params.onlyDec = true;
@@ -280,7 +280,7 @@ int main(int argv, char** args){
 
         if(params.showAllAlphas)    strcat(params.content,"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
         if(params.showAllDigits)    strcat(params.content,"0123456789");
-        if(params.showSpecialChars) strcat(params.content," !\"#$%%&\'()*+,-./:;<=>?@[\\]^_`{|}~");
+        if(params.showSpecialChars) strcat(params.content," !\"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~");
         if(params.showControlChars) ;
         
         params.contentSize += mem;
@@ -294,9 +294,9 @@ int main(int argv, char** args){
         return 0;
     }
 
-    printf("%s  %d\n",params.content,params.contentSize);
+    printf("%s %d\n",params.content, params.contentSize);
+
     manipulateData(&params);
-    printf("%s %d\n",params.content,params.contentSize);
     printData(params);
 
     return 0;
