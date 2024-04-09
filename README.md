@@ -1,7 +1,7 @@
 # ASCII TABLE
 
 ## Overview
-AsciiTable shows octal, hexadecimal, and decimal representations of ascii characters. It supports all 7-bit ASCII characters.
+AsciiTable shows octal, hexadecimal, and decimal representations of ascii characters. It supports all 8-bit ASCII characters. But 7-bit ASCII characters are prefered to be processed.
 ![Capture](https://github.com/ManojTGN/ascii-table/assets/42494649/bb0fc8f0-6163-4cc9-a1b4-4364950295e2)
 
 ## Features
