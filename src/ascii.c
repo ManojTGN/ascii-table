@@ -37,7 +37,7 @@ uint8_t isDec( char* _decimal ){
 asciiParams parseParameter(int argv, char** args){
     asciiParams params = {0};
     if(argv <= 1){
-        params.order = 1;
+        // params.order = 1;
         params.showAll = 128;
     }
 
@@ -92,8 +92,6 @@ asciiParams parseParameter(int argv, char** args){
     return params;
 }
 
-static int ascCmp(const void* a, const void* b){return *(char *)a > *(char *)b;}
-static int desCmp(const void* a, const void* b){return *(char *)a < *(char *)b;}
 void removeDuplicateChars(asciiParams *params){
     
     uint8_t occur[256] = {0};int i;int idx = 0;
@@ -115,10 +113,12 @@ void removeDuplicateChars(asciiParams *params){
     params->content = tmp;
 }
 
+static int ascCmp(const void* a, const void* b){return *(uint8_t *)a - *(uint8_t *)b;}
+static int desCmp(const void* a, const void* b){return *(uint8_t *)b - *(uint8_t *)a;}
 void sortChars(asciiParams *params){
     if(params->order){
-        if(params->order == 1) qsort(params->content, params->contentSize, sizeof(char), ascCmp);
-        else qsort(params->content, params->contentSize, sizeof(char), desCmp);
+        if(params->order == 1) qsort(params->content, params->contentSize, sizeof(uint8_t), ascCmp);
+        else qsort(params->content, params->contentSize, sizeof(uint8_t), desCmp);
     }
 }
 
