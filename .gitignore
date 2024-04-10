@@ -1,1 +1,3 @@
 build
+test/ascii.h
+test/test.exe

@@ -14,7 +14,7 @@
 #define RESET   "\x1b[0m"
 
 typedef struct parameter{
-    uint8_t showAll;           //--all  shows all available ascii codes
+    uint8_t showAll;        //--all  shows all available ascii codes
     uint8_t showAllDigits;  //--digits  shows all digits ascii codes
     uint8_t showAllAlphas;  //--alphas  shows all alphabets ascii codes
 
