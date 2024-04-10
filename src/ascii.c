@@ -70,7 +70,7 @@ asciiParams parseParameter(int argv, char** args){
         else if(strcmp(args[i],"--controls") == 0) params.showControlChars = 33;
         else if(strcmp(args[i],"--specials") == 0) params.showSpecialChars = 33;
 
-        else if(strcmp(args[i],"--oct") == 0) params.onlyOct = true;
+        else if(strcmp(args[i],"--octa") == 0) params.onlyOct = true;
         else if(strcmp(args[i],"--dec") == 0) params.onlyDec = true;
         else if(strcmp(args[i],"--hex") == 0) params.onlyHex = true;
         // else if(strcmp(args[i],"--char") == 0) params.onlyChar = true;

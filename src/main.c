@@ -79,8 +79,11 @@ void printData(asciiParams params){
     for(uint8_t i = 0; i < col; i++){
         uint8_t* hyphens = (uint8_t*)calloc( (size_t)maxLength[i],sizeof(uint8_t));
         memset(hyphens, (uint8_t)45, sizeof(uint8_t) * (size_t)maxLength[i]);
+
+        uint8_t* fHyphens = (uint8_t*)calloc( (params.onlyDec?5:0) + (params.onlyOct?5:0) + (params.onlyHex?5:0) + (params.onlyChar?4:0),sizeof(uint8_t));
+        memset(fHyphens, (uint8_t)45, sizeof(uint8_t) * ((params.onlyDec?5:0) + (params.onlyOct?5:0) + (params.onlyHex?5:0) + (params.onlyChar?4:0)));
         
-        printf("-------------------%s",hyphens);
+        printf("%s%s",fHyphens,hyphens);
         if(col-1 != i) printf("+--");
         free(hyphens);
     }printf("\n"RESET);
@@ -92,8 +95,11 @@ void printData(asciiParams params){
     for(uint8_t i = 0; i < col; i++){
         uint8_t* hyphens = (uint8_t*)calloc( (size_t)maxLength[i],sizeof(uint8_t));
         memset(hyphens, (uint8_t)45, sizeof(uint8_t) * (size_t)maxLength[i]);
+
+        uint8_t* fHyphens = (uint8_t*)calloc( (params.onlyDec?5:0) + (params.onlyOct?5:0) + (params.onlyHex?5:0) + (params.onlyChar?4:0),sizeof(uint8_t));
+        memset(fHyphens, (uint8_t)45, sizeof(uint8_t) * ((params.onlyDec?5:0) + (params.onlyOct?5:0) + (params.onlyHex?5:0) + (params.onlyChar?4:0)));
         
-        printf("-------------------%s",hyphens);
+        printf("%s%s",fHyphens,hyphens);
         if(col-1 != i) printf("+--");
         free(hyphens);
     }printf("\n"RESET);
