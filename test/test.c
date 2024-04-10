@@ -1,5 +1,5 @@
 #include <assert.h>
-#include "ascii.h"
+#include "../headers/ascii.h"
 
 #define OCTAL  8
 #define BINARY 2
