@@ -1,8 +1,16 @@
-CC = gcc
-BINS = main
+CC    = gcc
+BINS = _build
 
 all: $(BINS)
 
-main:
-	@if [ ! -d "build" ]; then mkdir build; fi
-	$(CC) -o build/ascii.exe src/main.c
+_test: build
+	$(CC) -o test/test.exe build/ascii.o test/test.c
+
+_build:
+	if not exist build mkdir build
+	$(CC) -o build/ascii.o -c src/ascii.c
+	$(CC) -o build/ascii.exe build/ascii.o src/main.c
+
+clean:
+	rm -rf "./build/*.o"
+

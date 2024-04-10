@@ -1,38 +1,4 @@
-#include <stdio.h>
-#include <stdint.h>
-#include <string.h>
-#include <stdbool.h>
-#include <stdlib.h>
-
-#define MAX_COL 4
-#define MAX_ROW 20
-#define YEL     "\x1b[33m"
-#define RESET   "\x1b[0m"
-
-typedef struct parameter{
-
-    bool showAll;           //--all  shows all available ascii codes
-    uint8_t showAllDigits;  //--digits  shows all digits ascii codes
-    uint8_t showAllAlphas;  //--alphas  shows all alphabets ascii codes
-
-    uint8_t showControlChars;//--controls shows all control ascii codes
-    uint8_t showSpecialChars;//--specials shows all special ascii codes
-
-    bool onlyOct;           //--oct  shows only octa in output table
-    bool onlyDec;           //--dec  shows only dec in output table
-    bool onlyHex;           //--hex  shows only hex in output table
-
-    bool onlyChar;          // hardcoded and set to true(1) always shows `chr` column
-    bool _onlyAll;          // if all only* 3 are false this will be set to true
-    
-    uint8_t* content;       // " " content / data (user input)
-    uint16_t contentSize;   // content size 
-    
-    uint8_t order;          //0 - default , (--asc)1 - ascending, (--des)2 - desending ordered output table
-    bool color;             //--vt100 register ansi vt100 escape sequence color to the terminal
-
-}asciiParams;
-
+#include "ascii.h"
 
 void splashScreen(){
     printf("ascii - ASCII character set encoded in octal, decimal, and hexadecimal\n\n"
@@ -73,151 +39,62 @@ void splashScreen(){
            "--------------------------------------------+-----------------------+---------------------+--------------------\n");
 }
 
-uint8_t isHex( char* _hexadecimal ){
-    return strlen(_hexadecimal) >= 3 && _hexadecimal[0]=='0' && (_hexadecimal[1]=='x'||_hexadecimal[1]=='X');
-}
-
-uint8_t isOct( char* _octal ){
-    if(strlen(_octal) <= 1 || _octal[strlen(_octal)-1] != 'o') return 0;
-    
-    for(uint8_t i = 0; i < strlen(_octal)-1; i++){
-        if(!(_octal[i] >= 48 && _octal[i] <= 55)) return 0;
-    }
-
-    return 8;
-}
-
-uint8_t isBin( char* _binary ){
-    if(strlen(_binary) <= 1 || _binary[strlen(_binary)-1] != 'b') return 0;
-
-    for(uint8_t i = 0; i < strlen(_binary)-1; i++){
-        if(!(_binary[i] == 48 || _binary[i] == 49)) return 0;
-    }
-
-    return 2;
-}
-
-uint8_t isDec( char* _decimal ){
-    if(strlen(_decimal) <= 1 || _decimal[strlen(_decimal)-1] != 'd') return 0;
-
-    for(uint8_t i = 0; i < strlen(_decimal)-1; i++){
-        if(!(_decimal[i] >= 48 && _decimal[i] <= 57)) return 0;
-    }
-
-    return 10;
-}
-
-asciiParams parseParameter(int argv, char** args){
-    
-    asciiParams params = {0};
-
-    for(uint8_t i = 1; i < argv; i++){
-
-        if(!(strlen(args[i]) >= 2 && args[i][0] == '-' && args[i][1] == '-')){
-        
-            uint8_t base = 0;
-            if( (base = isHex(args[i])) || (base = isOct(args[i])) || (base = isBin( args[i])) || (base = isDec( args[i])) ){
-                uint8_t number = (uint8_t) strtol(args[i],NULL,isHex(args[i])?0:base);
-                
-                free(args[i]);
-                args[i] = (uint8_t*) calloc(2,sizeof(uint8_t));
-
-                args[i][0] = number;
-                args[i][1] = '\0';
-                params.contentSize++;
-            }else params.contentSize += strlen(args[i]);
-
-
-            if(params.content == NULL) params.content = (uint8_t*)args[i];
-            else strcat(params.content,(uint8_t*) args[i]);
-            
-            continue;
-        }
-
-        if     (strcmp(args[i],"--all") == 0)    params.showAll = true;
-        else if(strcmp(args[i],"--digits") == 0) params.showAllDigits = 10;
-        else if(strcmp(args[i],"--alphas") == 0) params.showAllAlphas = 52;
-
-        else if(strcmp(args[i],"--controls") == 0) params.showControlChars = 0;
-        else if(strcmp(args[i],"--specials") == 0) params.showSpecialChars = 34;
-
-        else if(strcmp(args[i],"--oct") == 0) params.onlyOct = true;
-        else if(strcmp(args[i],"--dec") == 0) params.onlyDec = true;
-        else if(strcmp(args[i],"--hex") == 0) params.onlyHex = true;
-        // else if(strcmp(args[i],"--char") == 0) params.onlyChar = true;
-
-        else if(strcmp(args[i],"--asc")==0)  params.order = 1;
-        else if(strcmp(args[i],"--desc")==0) params.order = 2;
-
-        else if(strcmp(args[i],"--vt100")==0) params.color = true;
-
-    }
-
-    params.onlyChar = 1; //hardcoded;
-    params._onlyAll = !(params.onlyDec || params.onlyHex || params.onlyOct);
-
-    params.content = params.content == NULL?(uint8_t*)calloc(1,sizeof(uint8_t)):params.content;
-    // params.contentSize = strlen(params.content);
-    
-    return params;
-
-}
-
-static int ascCmp(const void* a, const void* b){return *(char *)a > *(char *)b;}
-static int desCmp(const void* a, const void* b){return *(char *)a < *(char *)b;}
-void manipulateData(asciiParams *params){
-
-    uint8_t occur[256] = {0};int i;int idx = 0;
-    for(i = 0; i < params->contentSize; i++){
-        if(!occur[params->content[i]]){
-            if(idx != i){
-                params->content[idx] = params->content[i];
-            }
-
-            idx++;
-            occur[params->content[i]] = 1;
-        }
-    }
-
-    uint8_t* tmp = (uint8_t *)calloc(idx ,sizeof(uint8_t));
-    params->contentSize = idx;
-
-    strncpy(tmp, params->content, idx);tmp[idx] = '\0';
-    params->content = tmp;
-
-    if(params->order){
-        if(params->order == 1) qsort(params->content, params->contentSize, sizeof(char), ascCmp);
-        else qsort(params->content, params->contentSize, sizeof(char), desCmp);
-    }
-}
-
 void printData(asciiParams params){
-
-    uint8_t col = (params.contentSize/MAX_ROW) + 1;
+    uint8_t col = (params.contentSize%MAX_ROW) == 0?(params.contentSize/MAX_ROW):(params.contentSize/MAX_ROW)+1;
     uint8_t row = col > 1?MAX_ROW:params.contentSize;
     
+    uint8_t* maxLength = (uint8_t*) calloc(col,sizeof(uint8_t));
     char** lines = (char**)calloc(row,sizeof(char*));
     size_t s = 0;
 
     for(uint8_t i = 0; i < row; i++)
         lines[i] = (char*)calloc(300,sizeof(char));
 
+    uint8_t currRow = s%row;
+    uint8_t currCol = (s/row)+1;
+    uint8_t procCol = 0;
+    uint8_t currLineLength = 0;
     while(params.contentSize - s){
-        char tmp[20];
+        char tmp[60];
+        currRow = s%row;
+        currCol = (s/row)+1;
+
+        if(currCol != procCol){
+            for(uint8_t i = 0; i < row && s+i < params.contentSize; i++){
+                currLineLength = strlen( getPrintable(params.content[s+i]) ) - 3;
+                maxLength[currCol-1] = maxLength[currCol-1] < currLineLength?currLineLength:maxLength[currCol-1];
+            }
+            procCol = currCol;
+        }
 
         snprintf(tmp, sizeof(tmp), "%03o  ", params.content[s]);
-        if(params.onlyOct || params._onlyAll) strcat(lines[s%row],tmp);
+        if(params.onlyOct || params._onlyAll) strcat(lines[currRow],tmp);
 
         snprintf(tmp, sizeof(tmp), "%3d  ", params.content[s]);
-        if(params.onlyDec || params._onlyAll) strcat(lines[s%row],tmp);
+        if(params.onlyDec || params._onlyAll) strcat(lines[currRow],tmp);
 
         snprintf(tmp, sizeof(tmp), " %2X  ", params.content[s]);
-        if(params.onlyHex || params._onlyAll) strcat(lines[s%row],tmp);
+        if(params.onlyHex || params._onlyAll) strcat(lines[currRow],tmp);
 
-        snprintf(tmp, sizeof(tmp),YEL"%c "RESET, params.content[s]);
-        if(params.onlyChar || params._onlyAll) strcat(lines[s%row],tmp);
+        if(isPrintable(params.content[s])){
+            snprintf(tmp, sizeof(tmp),YEL"%c "RESET, params.content[s]);
+            currLineLength = 0;
+        }else{
+            char* print = getPrintable(params.content[s]);
+            currLineLength = strlen(print) - 3;
+            snprintf(tmp, sizeof(tmp),YEL"%s"RESET, print);
+        }
+        if(params.onlyChar || params._onlyAll) strcat(lines[currRow],tmp);
 
-        if((s/row)+1 != col) strcat(lines[s%row],"  |  ");
+        if(currCol != col){
+            uint8_t* spaces = (uint8_t*)calloc( (size_t)maxLength[currCol-1] - currLineLength,sizeof(uint8_t));
+            memset(spaces, (uint8_t)32, sizeof(uint8_t) * (size_t)maxLength[currCol-1] - currLineLength);
+
+            strcat(lines[currRow],spaces);
+            strcat(lines[currRow],currLineLength == 0?"  |  ":" |  ");
+
+            free(spaces);
+        }
         s++;
     }
 
@@ -228,21 +105,36 @@ void printData(asciiParams params){
         if(params.onlyDec || params._onlyAll)  printf("Dec  ");
         if(params.onlyHex || params._onlyAll)  printf("Hex  ");
         if(params.onlyChar|| params._onlyAll)  printf(YEL"Chr"RESET);
-        printf("    ");
+
+        if(col != i+1){
+            uint8_t* spaces = (uint8_t*)calloc( (size_t)maxLength[i],sizeof(uint8_t));
+            memset(spaces, (uint8_t)32, sizeof(uint8_t) * (size_t)maxLength[i]);
+
+            printf(" %s|  ",spaces);
+            free(spaces);
+        }
     }printf("\n"RESET);
 
-    for(uint8_t i = 1; i <=  colLineLength*col; i++){
-        if(i%colLineLength == 0 && i != colLineLength*col) printf("+--");
-        else printf("-");
+    for(uint8_t i = 0; i < col; i++){
+        uint8_t* hyphens = (uint8_t*)calloc( (size_t)maxLength[i],sizeof(uint8_t));
+        memset(hyphens, (uint8_t)45, sizeof(uint8_t) * (size_t)maxLength[i]);
+        
+        printf("-------------------%s",hyphens);
+        if(col-1 != i) printf("+--");
+        free(hyphens);
     }printf("\n"RESET);
 
     for(uint8_t i = 0; i < row; i++){
         printf("%s\n"RESET,lines[i]);
     }printf(RESET);
 
-    for(uint8_t i = 1; i <=  colLineLength*col; i++){
-        if(i%colLineLength == 0 && i != colLineLength*col) printf("+--");
-        else printf("-");
+    for(uint8_t i = 0; i < col; i++){
+        uint8_t* hyphens = (uint8_t*)calloc( (size_t)maxLength[i],sizeof(uint8_t));
+        memset(hyphens, (uint8_t)45, sizeof(uint8_t) * (size_t)maxLength[i]);
+        
+        printf("-------------------%s",hyphens);
+        if(col-1 != i) printf("+--");
+        free(hyphens);
     }printf("\n"RESET);
 
 }
@@ -250,41 +142,40 @@ void printData(asciiParams params){
 
 int main(int argv, char** args){
 
-    if(argv <= 1){
-        splashScreen();
-        return 0;
-    }
-
     asciiParams params = parseParameter(argv, args);
 
     if(params.color){
         system("REG ADD HKCU\\CONSOLE /f /v VirtualTerminalLevel /t REG_DWORD /d 1");
         return 0;
     }
-
-    if(params.showAll){
-        splashScreen();
-        return 0;
-    }
     
-    uint16_t mem = params.showAllAlphas + params.showAllDigits + params.showSpecialChars + params.showControlChars;
+    uint16_t mem = params.showAll?params.showAll : params.showAllAlphas + params.showAllDigits + params.showSpecialChars + params.showControlChars;
     
     if(mem){
         uint8_t* cpy = (uint8_t*) calloc(params.contentSize,sizeof(uint8_t));
         strcpy(cpy,params.content);
-        // cpy[params.contentSize] = '\0';
 
         params.content = (uint8_t*) calloc(mem+params.contentSize+1, sizeof(uint8_t));
         strcat(params.content, cpy);
         free(cpy);
 
-        if(params.showAllAlphas)    strcat(params.content,"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
-        if(params.showAllDigits)    strcat(params.content,"0123456789");
-        if(params.showSpecialChars) strcat(params.content," !\"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~");
-        if(params.showControlChars) ;
+        if(params.showAllAlphas     || params.showAll) strcat(params.content,"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
+        if(params.showAllDigits     || params.showAll) strcat(params.content,"0123456789");
+        if(params.showSpecialChars  || params.showAll) strcat(params.content," !\"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~");
+        if(params.showControlChars  || params.showAll){
+            char tmp[2];tmp[1] = '\0';
+            for(uint8_t i = 0; i < 32; i++){
+                tmp[0] = (char)i;
+                strcat(params.content, tmp);
+            }
+
+            tmp[0] = 127;
+            strcat(params.content,tmp);
+        }
         
         params.contentSize += mem;
     }
+    
 
     //@todo: print the data first in the center
     //       and then print the table output ..
@@ -293,8 +184,10 @@ int main(int argv, char** args){
         printf("ascii: No Data Is Found; Output Table Is Empty;");
         return 0;
     }
+    
+    removeDuplicateChars(&params);
+    sortChars(&params);
 
-    manipulateData(&params);
     printData(params);
 
     return 0;
