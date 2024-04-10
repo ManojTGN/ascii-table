@@ -37,7 +37,7 @@ uint8_t isDec( char* _decimal ){
 asciiParams parseParameter(int argv, char** args){
     asciiParams params = {0};
     if(argv <= 1){
-        // params.order = 1;
+        params.order = 1;
         params.showAll = 128;
     }
 
@@ -56,7 +56,6 @@ asciiParams parseParameter(int argv, char** args){
                 args[i][1] = '\0';
                 params.contentSize++;
             }else params.contentSize += strlen(args[i]);
-
 
             if(params.content == NULL) params.content = (uint8_t*)args[i];
             else strcat(params.content,(uint8_t*) args[i]);
@@ -86,7 +85,7 @@ asciiParams parseParameter(int argv, char** args){
     params.onlyChar = 1; //hardcoded;
     params._onlyAll = !(params.onlyDec || params.onlyHex || params.onlyOct);
 
-    params.content = params.content == NULL?(uint8_t*)calloc(1,sizeof(uint8_t)):params.content;
+    // params.content = params.content == NULL?(uint8_t*)calloc(1,sizeof(uint8_t)):params.content;
     // params.contentSize = strlen(params.content);
     
     return params;
@@ -129,8 +128,7 @@ bool isPrintable(uint8_t character){
 uint8_t* getPrintable(uint8_t content){
     if(!(content >= 0 && content <= 32 || content == 127)) return "   ";
 
-    switch (content)
-    {
+    switch (content){
     case 0: return   "NUL (null)";
     case 1: return   "SOH (start of heading)";
     case 2: return   "STX (start of text)";
@@ -165,9 +163,7 @@ uint8_t* getPrintable(uint8_t content){
     case 31: return  "US  (unit separator)";
     case 32: return  "SPACE";
     case 127:return  "DEL (delete control)";
-
-    default:
-        return "   ";
+    default: return "   ";
     }
 }
 
