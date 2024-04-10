@@ -48,4 +48,7 @@ void sortChars(asciiParams *params);
 bool isPrintable(uint8_t character);
 uint8_t* getPrintable(uint8_t content);
 
+static int ascCmp(const void* a, const void* b);
+static int desCmp(const void* a, const void* b);
+
 #endif /* _ASCII_H_ */
