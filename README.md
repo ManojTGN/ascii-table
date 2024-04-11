@@ -1,4 +1,5 @@
 # ASCII TABLE
+![asciitable](https://github.com/ManojTGN/ascii-table/assets/42494649/ab86ba7e-6085-464c-9ff2-c76e6aa661e6)
 
 ## Overview
 AsciiTable shows octal, hexadecimal, and decimal representations of ascii characters. It supports all 8-bit ASCII characters. But 7-bit ASCII characters are prefered to be processed.
