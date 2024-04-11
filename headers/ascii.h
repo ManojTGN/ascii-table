@@ -33,7 +33,6 @@ typedef struct parameter{
     
     uint8_t order;          //0 - default , (--asc)1 - ascending, (--des)2 - desending ordered output table
     bool color;             //--vt100 register ansi vt100 escape sequence color to the terminal
-
 }asciiParams;
 
 uint8_t isHex( char* _hexadecimal );

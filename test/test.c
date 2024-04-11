@@ -1,8 +1,9 @@
 #include <assert.h>
 #include "../headers/ascii.h"
 
-#define OCTAL  8
-#define BINARY 2
+#define OCTAL   8
+#define BINARY  2
+#define DECIMAL 10
 
 int main(){
 
@@ -66,6 +67,16 @@ int main(){
     assert( isBin("0b")     == BINARY);
     assert( isBin("1b")     == BINARY);
     assert( isBin("10001b") == BINARY);
+
+    //isDec()
+    assert( isDec("0")      == false  );
+    assert( isDec("100")    == false  );
+    assert( isDec("999")    == false  );
+    assert( isDec("6969")   == false  );
+    assert( isDec("010")    == false  );
+    assert( isDec("0d")     == DECIMAL);
+    assert( isDec("10d")    == DECIMAL);
+    assert( isDec("100d")   == DECIMAL);
 
     return 0;
 }
