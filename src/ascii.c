@@ -85,8 +85,7 @@ asciiParams parseParameter(int argv, char** args){
     params.onlyChar = 1; //hardcoded;
     params._onlyAll = !(params.onlyDec || params.onlyHex || params.onlyOct);
 
-    // params.content = params.content == NULL?(uint8_t*)calloc(1,sizeof(uint8_t)):params.content;
-    // params.contentSize = strlen(params.content);
+    if(params.showAll && params.order == 0) params.order = 1;
     
     return params;
 }

@@ -53,8 +53,19 @@ int main(){
     assert( isOct("8")  == false);
 
     // isBin()
-    assert( isBin("")  == false);
-    assert( isBin("b") == false);
+    assert( isBin("")       == false );
+    assert( isBin("b")      == false );
+    assert( isBin("2b")     == false );
+    assert( isBin("3b")     == false );
+    assert( isBin("4b")     == false );
+    assert( isBin("5b")     == false );
+    assert( isBin("6b")     == false );
+    assert( isBin("7b")     == false );
+    assert( isBin("8b")     == false );
+    assert( isBin("9b")     == false );
+    assert( isBin("0b")     == BINARY);
+    assert( isBin("1b")     == BINARY);
+    assert( isBin("10001b") == BINARY);
 
     return 0;
 }
