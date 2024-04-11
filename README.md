@@ -68,7 +68,7 @@ ascii --digits --specials
 ascii --digits --alphas --specials --controls
 ascii --all
 
-ascii "show octal & decimal" --oct --dec
+ascii "show octal & decimal" --octa --dec
 ascii "show only hex" --hex
 
 ascii --vt100
