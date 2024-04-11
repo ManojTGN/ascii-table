@@ -1,5 +1,10 @@
 #include "ascii.h"
 
+/**
+ * @brief printing the content into table format
+ * 
+ * @param params 
+ */
 void printData(asciiParams params){
     uint8_t col = (params.contentSize%MAX_ROW) == 0?(params.contentSize/MAX_ROW):(params.contentSize/MAX_ROW)+1;
     uint8_t row = col > 1?MAX_ROW:params.contentSize;
@@ -129,21 +134,26 @@ int main(int argv, char** args){
         strcat(params.content, cpy);
         free(cpy);
 
-        if(params.showAllAlphas     || params.showAll) strcat(params.content,"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
-        if(params.showAllDigits     || params.showAll) strcat(params.content,"0123456789");
-        if(params.showSpecialChars  || params.showAll) strcat(params.content," !\"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~");
-        if(params.showControlChars  || params.showAll){
-            char tmp[2];tmp[1] = '\0';
-            for(uint8_t i = 0; i < 32; i++){
-                tmp[0] = (char)i;
-                strcat(params.content, tmp);
-            }
-
-            tmp[0] = 127;
-            strcat(params.content,tmp);
+        if(params.showAllAlphas || params.showAll){
+            strcat(params.content,"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
+            params.contentSize += params.showAllAlphas;
         }
-        
-        params.contentSize += mem;
+
+        if(params.showAllDigits|| params.showAll){
+            strcat(params.content,"0123456789");
+            params.contentSize += params.showAllDigits;
+        }
+
+        if(params.showSpecialChars || params.showAll){
+            strcat(params.content," !\"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~");
+            params.contentSize += params.showSpecialChars;
+        }
+
+        if(params.showControlChars  || params.showAll){
+            for(uint8_t i = 0; i < 32; i++)
+            params.content[ params.contentSize++ ] = (uint8_t)i;
+            params.content[ params.contentSize++ ] = (uint8_t)127;
+        }
     }
 
     if(params.content == NULL){

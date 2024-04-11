@@ -1,9 +1,23 @@
 #include "ascii.h"
 
+/**
+ * @brief check wheather the given string is hexadecimal &
+ *        returns 1 if it is hexadecimal else 0
+ * 
+ * @param _hexadecimal char* (string)
+ * @return uint8_t 
+ */
 uint8_t isHex( char* _hexadecimal ){
     return strlen(_hexadecimal) >= 3 && _hexadecimal[0]=='0' && (_hexadecimal[1]=='x'||_hexadecimal[1]=='X');
 }
 
+/**
+ * @brief check wheather the given string is octal &
+ *        returns 8(OCTAL BASE) if it is octal else 0
+ * 
+ * @param _octal char* (string)
+ * @return uint8_t 
+ */
 uint8_t isOct( char* _octal ){
     if(strlen(_octal) <= 1 || _octal[strlen(_octal)-1] != 'o') return 0;
     
@@ -14,6 +28,13 @@ uint8_t isOct( char* _octal ){
     return 8;
 }
 
+/**
+ * @brief check wheather the given string is binary &
+ *        returns 2(BINARY BASE) if it is binary else 0
+ * 
+ * @param _binary char* (string)
+ * @return uint8_t 
+ */
 uint8_t isBin( char* _binary ){
     if(strlen(_binary) <= 1 || _binary[strlen(_binary)-1] != 'b') return 0;
 
@@ -24,6 +45,13 @@ uint8_t isBin( char* _binary ){
     return 2;
 }
 
+/**
+ * @brief check wheather the given string is decimal &
+ *        returns 10(DECIMAL BASE) if it is decimal else 0
+ * 
+ * @param _binary char* (string)
+ * @return uint8_t 
+ */
 uint8_t isDec( char* _decimal ){
     if(strlen(_decimal) <= 1 || _decimal[strlen(_decimal)-1] != 'd') return 0;
 
@@ -34,6 +62,14 @@ uint8_t isDec( char* _decimal ){
     return 10;
 }
 
+/**
+ * @brief Parse the arguments & makes process to the asciiParams
+ *        according to the arguments and returns the asciiParams
+ * 
+ * @param argv int
+ * @param args char** (string[])
+ * @return asciiParams 
+ */
 asciiParams parseParameter(int argv, char** args){
     asciiParams params = {0};
     if(argv <= 1){
@@ -86,12 +122,23 @@ asciiParams parseParameter(int argv, char** args){
     params._onlyAll = !(params.onlyDec || params.onlyHex || params.onlyOct);
 
     if(params.showAll && params.order == 0) params.order = 1;
+    if(params.showAll){
+        params.showAllAlphas = 52;
+        params.showAllDigits = 10;
+        params.showControlChars = 33;
+        params.showSpecialChars = 33;
+    }
     
     return params;
 }
 
+/**
+ * @brief remove dupilicate characters in the input content &
+ *        changes the size of the input content (contentSize)
+ * 
+ * @param params asciiParams*
+ */
 void removeDuplicateChars(asciiParams *params){
-    
     uint8_t occur[256] = {0};int i;int idx = 0;
     for(i = 0; i < params->contentSize; i++){
         if(!occur[params->content[i]]){
@@ -104,15 +151,25 @@ void removeDuplicateChars(asciiParams *params){
         }
     }
 
+    if(idx == params->contentSize) return;
+
     uint8_t* tmp = (uint8_t *)calloc(idx ,sizeof(uint8_t));
     params->contentSize = idx;
 
     strncpy(tmp, params->content, idx);tmp[idx] = '\0';
+    free(params->content);
     params->content = tmp;
 }
 
 static int ascCmp(const void* a, const void* b){return *(uint8_t *)a - *(uint8_t *)b;}
 static int desCmp(const void* a, const void* b){return *(uint8_t *)b - *(uint8_t *)a;}
+
+/**
+ * @brief sort the input content in ascending / descending order
+ *        according to the order input specified with `--asc`/`--desc`
+ * 
+ * @param params asciiParams*
+ */
 void sortChars(asciiParams *params){
     if(params->order){
         if(params->order == 1) qsort(params->content, params->contentSize, sizeof(uint8_t), ascCmp);
@@ -120,10 +177,23 @@ void sortChars(asciiParams *params){
     }
 }
 
+/**
+ * @brief checks wheather the character is printable on the screen
+ *        or not and if printable it returns true else false
+ * 
+ * @param character 
+ * @return bool 
+ */
 bool isPrintable(uint8_t character){
     return !(character >= 0 && character <= 32 || character == 127);
 }
 
+/**
+ * @brief Get the printable custom value for non printable characters
+ * 
+ * @param content 
+ * @return uint8_t* 
+ */
 uint8_t* getPrintable(uint8_t content){
     if(!(content >= 0 && content <= 32 || content == 127)) return "   ";
 
