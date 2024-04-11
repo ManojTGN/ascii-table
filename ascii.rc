@@ -3,8 +3,8 @@
 IDI_ICON1 ICON "ascii.ico"
 
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION 0,3,2,10
-PRODUCTVERSION 0,3,2,0
+FILEVERSION 0,4,0,0
+PRODUCTVERSION 0,4,0,0
 FILEFLAGSMASK 0x3fL
 FILEFLAGS 0x0L
 FILEOS 0x4L
@@ -17,12 +17,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName",      "AceContra\0"
             VALUE "FileDescription",  "AsciiTable shows octal, hexadecimal, and decimal representations of ascii characters\0"
-            VALUE "FileVersion",      "0.3.2.10\0"
+            VALUE "FileVersion",      "0.4.0.0\0"
             VALUE "InternalName",     "YourInternalName\0"
             VALUE "LegalCopyright",   "AceContra\0"
             VALUE "OriginalFilename", "ascii_x64.exe\0"
             VALUE "ProductName",      "asciiTable\0"
-            VALUE "ProductVersion",   "0.3.2.0\0"
+            VALUE "ProductVersion",   "0.4.0.0\0"
         END
     END
     BLOCK "VarFileInfo"
