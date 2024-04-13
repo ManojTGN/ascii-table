@@ -24,6 +24,7 @@ typedef struct parameter{
     bool onlyOct;           //--oct  shows only octa in output table
     bool onlyDec;           //--dec  shows only dec in output table
     bool onlyHex;           //--hex  shows only hex in output table
+    bool onlyBin;           //--bin  shows Binary in output table
 
     bool onlyChar;          // hardcoded and set to true(1) always shows `chr` column
     bool _onlyAll;          // if all only* 3 are false this will be set to true

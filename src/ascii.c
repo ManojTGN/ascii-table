@@ -109,6 +109,7 @@ asciiParams parseParameter(int argv, char** args){
         else if(strcmp(args[i],"--octa") == 0) params.onlyOct = true;
         else if(strcmp(args[i],"--dec") == 0) params.onlyDec = true;
         else if(strcmp(args[i],"--hex") == 0) params.onlyHex = true;
+        else if(strcmp(args[i],"--bin") == 0) params.onlyBin = true;
         // else if(strcmp(args[i],"--char") == 0) params.onlyChar = true;
 
         else if(strcmp(args[i],"--asc")==0)  params.order = 1;
@@ -157,7 +158,7 @@ void removeDuplicateChars(asciiParams *params){
     params->contentSize = idx;
 
     strncpy(tmp, params->content, idx);tmp[idx] = '\0';
-    free(params->content);
+    // free(params->content);
     params->content = tmp;
 }
 

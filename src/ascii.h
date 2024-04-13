@@ -27,6 +27,7 @@ typedef struct parameter{
 
     bool onlyChar;          // hardcoded and set to true(1) always shows `chr` column
     bool _onlyAll;          // if all only* 3 are false this will be set to true
+    bool onlyBin;           //--bin  shows Binary in output table
     
     uint8_t* content;       // " " content / data (user input)
     uint16_t contentSize;   // content size 
