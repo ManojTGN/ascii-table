@@ -10,7 +10,9 @@
 
 #define MAX_COL 4
 #define MAX_ROW 32
-#define YEL     "\x1b[33m"
+#define GRAY "\x1B[38;5;243m"
+#define GOLD "\x1B[38;5;220m"
+#define YEL  "\x1B[38;5;172m"
 #define RESET   "\x1b[0m"
 
 typedef struct parameter{

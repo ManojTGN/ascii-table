@@ -33,6 +33,10 @@ void printData(asciiParams params){
             procCol = currCol;
         }
 
+        if(s%2 == 0){
+            strcat(lines[currRow],GRAY);
+        }
+
         if(params.onlyOct || params._onlyAll){
             snprintf(tmp, sizeof(tmp), "%03o  ", params.content[s]);
             strcat(lines[currRow],tmp);
@@ -72,12 +76,12 @@ void printData(asciiParams params){
         }
 
         if(isPrintable(params.content[s])){
-            snprintf(tmp, sizeof(tmp),YEL"%c "RESET, params.content[s]);
+            snprintf(tmp, sizeof(tmp),s%2==0?YEL"%c "RESET:GOLD"%c "RESET, params.content[s]);
             currLineLength = 0;
         }else{
             char* print = getPrintable(params.content[s]);
             currLineLength = strlen(print) - 3;
-            snprintf(tmp, sizeof(tmp),YEL"%s"RESET, print);
+            snprintf(tmp, sizeof(tmp),s%2==0?YEL"%s"RESET:GOLD"%s"RESET, print);
         }
         if(params.onlyChar || params._onlyAll) strcat(lines[currRow],tmp);
 
