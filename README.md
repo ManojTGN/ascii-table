@@ -38,6 +38,7 @@ ascii [characters...] [..options]
     `--octa`    shows only octa in output table
     `--dec`     shows only dec in output table
     `--hex`     shows only hex in output table
+    `--bin`     shows binary in output table
     
     `--asc`     shows output table in ascending order
     `--desc`    shows output table in desending order
@@ -70,6 +71,8 @@ ascii --all
 
 ascii "show octal & decimal" --octa --dec
 ascii "show only hex" --hex
+ascii "add binary representation" --bin
+ascii "show only octa & also bin" --octa --bin
 
 ascii --vt100
 
