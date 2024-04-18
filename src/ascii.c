@@ -195,45 +195,45 @@ bool isPrintable(uint8_t character){
  * @param content 
  * @return uint8_t* 
  */
-uint8_t* getPrintable(uint8_t content){
-    if(!(content >= 0 && content <= 32 || content == 127)) return "   ";
+wchar_t* getPrintable(uint8_t content){
+    if(!(content >= 0 && content <= 32 || content == 127)) return L"   ";
 
     switch (content){
-    case 0: return   "NUL (null)";
-    case 1: return   "SOH (start of heading)";
-    case 2: return   "STX (start of text)";
-    case 3: return   "ETX (end of text)";
-    case 4: return   "EOT (end of transmission)";
-    case 5: return   "ENQ (enquiry)";
-    case 6: return   "ACK (acknowledge)";
-    case 7: return   "BEL (bell)";
-    case 8: return   "BS  (backspace)";
-    case 9: return   "TAB (horizontal tab)";
-    case 10: return  "LF  (NL line feed, new line)";
-    case 11: return  "VT  (vertical tab)";
-    case 12: return  "FF  (NP form feed, new page)";
-    case 13: return  "CR  (carriage return)";
-    case 14: return  "SO  (shift out)";
-    case 15: return  "SI  (shift in)";
-    case 16: return  "DLE (data link escape)";
-    case 17: return  "DC1 (device control 1)";
-    case 18: return  "DC2 (device control 2)";
-    case 19: return  "DC3 (device control 3)";
-    case 20: return  "DC4 (device control 4)";
-    case 21: return  "NAK (negative acknowledge)";
-    case 22: return  "SYN (synchronous idle)";
-    case 23: return  "ETB (end of trans. block)";
-    case 24: return  "CAN (cancel)";
-    case 25: return  "EM  (end of medium)";
-    case 26: return  "SUB (substitute)";
-    case 27: return  "ESC (escape)";
-    case 28: return  "FS  (file separator)";
-    case 29: return  "GS  (group separator)";
-    case 30: return  "RS  (record separator)";
-    case 31: return  "US  (unit separator)";
-    case 32: return  "SPACE";
-    case 127:return  "DEL (delete control)";
-    default: return "   ";
+    case 0: return   L"NUL (null)";
+    case 1: return   L"SOH (start of heading)";
+    case 2: return   L"STX (start of text)";
+    case 3: return   L"ETX (end of text)";
+    case 4: return   L"EOT (end of transmission)";
+    case 5: return   L"ENQ (enquiry)";
+    case 6: return   L"ACK (acknowledge)";
+    case 7: return   L"BEL (bell)";
+    case 8: return   L"BS  (backspace)";
+    case 9: return   L"TAB (horizontal tab)";
+    case 10: return  L"LF  (NL line feed, new line)";
+    case 11: return  L"VT  (vertical tab)";
+    case 12: return  L"FF  (NP form feed, new page)";
+    case 13: return  L"CR  (carriage return)";
+    case 14: return  L"SO  (shift out)";
+    case 15: return  L"SI  (shift in)";
+    case 16: return  L"DLE (data link escape)";
+    case 17: return  L"DC1 (device control 1)";
+    case 18: return  L"DC2 (device control 2)";
+    case 19: return  L"DC3 (device control 3)";
+    case 20: return  L"DC4 (device control 4)";
+    case 21: return  L"NAK (negative acknowledge)";
+    case 22: return  L"SYN (synchronous idle)";
+    case 23: return  L"ETB (end of trans. block)";
+    case 24: return  L"CAN (cancel)";
+    case 25: return  L"EM  (end of medium)";
+    case 26: return  L"SUB (substitute)";
+    case 27: return  L"ESC (escape)";
+    case 28: return  L"FS  (file separator)";
+    case 29: return  L"GS  (group separator)";
+    case 30: return  L"RS  (record separator)";
+    case 31: return  L"US  (unit separator)";
+    case 32: return  L"SPACE";
+    case 127:return  L"DEL (delete control)";
+    default: return  L"   ";
     }
 }
 

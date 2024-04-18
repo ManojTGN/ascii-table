@@ -30,7 +30,7 @@ void printData(asciiParams params){
 
         if(currCol != procCol){
             for(uint8_t i = 0; i < row && s+i < params.contentSize; i++){
-                currLineLength = strlen( getPrintable(params.content[s+i]) ) - 3;
+                currLineLength = wcslen( getPrintable(params.content[s+i]) ) - 3;
                 maxLength[currCol-1] = maxLength[currCol-1] < currLineLength?currLineLength:maxLength[currCol-1];
             }
             procCol = currCol;
@@ -82,8 +82,8 @@ void printData(asciiParams params){
             snprintf(tmp, sizeof(tmp),s%2==0?YEL"%c "RESET:GOLD"%c "RESET, params.content[s]);
             currLineLength = 0;
         }else{
-            char* print = getPrintable(params.content[s]);
-            currLineLength = strlen(print) - 3;
+            wchar_t* print = getPrintable(params.content[s]);
+            currLineLength = wcslen(print) - 3;
             snprintf(tmp, sizeof(tmp),s%2==0?YEL"%s"RESET:GOLD"%s"RESET, print);
         }
         if(params.onlyChar || params._onlyAll) strcat(lines[currRow],tmp);
@@ -248,18 +248,17 @@ int main(int argv, char** args){
             snwprintf(_tmp, sizeof(_tmp),L"%c"RESET, params.content[i]);
             _tmpRow = createRow(_tmp, 1);
         }else{
-            char* print = getPrintable(params.content[i]);
-            snwprintf(_tmp, sizeof(_tmp),L"%s"RESET, print);
-            _tmpRow = createRow(_tmp, 0);
+            wchar_t* print = getPrintable(params.content[i]);
+            _tmpRow = createRow(print, 0);
         }
 
         addRow(charColumn,_tmpRow);
     }
 
-    addColumn(outputTable, octalColumn);
-    addColumn(outputTable, decimalColumn);
-    addColumn(outputTable, hexaColumn);
-    addColumn(outputTable, charColumn);
+    if( params.onlyOct || params._onlyAll) addColumn(outputTable, octalColumn);
+    if( params.onlyDec || params._onlyAll) addColumn(outputTable, decimalColumn);
+    if( params.onlyHex || params._onlyAll) addColumn(outputTable, hexaColumn);
+    if( params.onlyChar|| params._onlyAll) addColumn(outputTable, charColumn);
 
     // renderTable(outputTable);
     __renderTable(outputTable);

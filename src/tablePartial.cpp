@@ -19,59 +19,95 @@ enum _BR{
     _IL_1  = L'├',
     _IR_1  = L'┤',
     _IC_1  = L'┼',
+    _IT_1  = L'┬',
+    _IB_1  = L'┴',
     _E     = L' '
 };
-
-void _renderHeader(Table* table, _renderInfo* renderInfo){
-    wstring wborderLine = wstring(table->length+1,_HL_1);
-    wcout<<(wchar_t)_TLC_1<<wborderLine<<(wchar_t)_TRC_1<<endl<<(wchar_t)_VL_1<<(wchar_t)_E;
-    
-    for(uint8_t i =0; i < table->colSize; i++){
-        if(table->columns[i]->_toShink){
-            wcout<<wstring(table->columns[i]->header, &table->columns[i]->header[ table->columns[i]->shrinkHeaderSize ])<<(wchar_t)_E;
-        }else if(table->columns[i]->maxHeaderSize == 0 && table->columns[i]->length >= strlen(table->columns[i]->header)){
-            wcout<<table->columns[i]->header<<(wchar_t)_E;
-        }else if(table->columns[i]->maxHeaderSize != 0){
-            wcout<<wstring(table->columns[i]->header, &table->columns[i]->header[ table->columns[i]->maxHeaderSize ])<<(wchar_t)_E;
-        }else{
-            wcout<<table->columns[i]->header<<(wchar_t)_E;
-        }
-    }wcout<<(wchar_t)_VL_1<<endl<<(wchar_t)_IL_1<<wborderLine<<(wchar_t)_IR_1<<endl;
-}
-
-void _renderBody(Table* table, _renderInfo* renderInfo){
-    wstring wborderLine = wstring(table->length+1,_HL_1);
-
-    for(uint8_t j = 0; j < table->rowSize; j++){
-        wcout<<(wchar_t)_VL_1<<(wchar_t)_E;
-        for(uint8_t i = 0; i < table->colSize; i++){
-            if(table->columns[i]->_curr == NULL) continue;
-            
-            wcout<<wstring(table->columns[i]->_curr->data)<<(wchar_t)_E;
-
-            if(table->columns[i]->maxHeaderSize == 0 && table->columns[i]->length >= strlen(table->columns[i]->header)){
-                wcout<<wstring(abs( (int)(strlen(table->columns[i]->header)-(int)table->columns[i]->_curr->length) ),(wchar_t)_E)<<(wchar_t)_E;
-            }else if(table->columns[i]->maxHeaderSize != 0 && table->columns[i]->_curr->length < table->columns[i]->maxHeaderSize ){
-                wcout<<wstring(table->columns[i]->maxHeaderSize - table->columns[i]->_curr->length,(wchar_t)_E)<<(wchar_t)_E;
-            }else{
-                // wcout<<table->columns[i]->header<<(wchar_t)_E;
-            }
-
-            table->columns[i]->_curr = table->columns[i]->_curr->_next;
-        }
-        wcout<<(wchar_t)_VL_1<<endl;
-    }
-
-    wcout<<(wchar_t)_BLC_1<<wborderLine<<(wchar_t)_BRC_1<<endl;
-}
 
 void _renderTable(Table* table){
     // _setmode(_fileno(stdin), _O_U16TEXT);
     _setmode(_fileno(stdout), _O_U16TEXT);
 
-    _renderInfo renderInfo = {};
-    
-    _renderHeader(table, &renderInfo);
-    _renderBody(table, &renderInfo);
-    
+    HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+
+    GetConsoleScreenBufferInfo(handle, &csbi);
+    COORD basePosition = csbi.dwCursorPosition;
+    COORD currPosition = basePosition;
+
+    currPosition.X += 2;
+    for(uint8_t i = 0; i < table->colSize; i++){
+        Column* column = table->columns[i];
+
+        currPosition.Y = basePosition.Y;
+        SetConsoleCursorPosition(handle, currPosition);
+
+        uint8_t lineLength = (column->_toShink?  column->shrinkHeaderSize: column->maxHeaderSize? column->maxHeaderSize :strlen(column->header) );
+        lineLength = lineLength > column->length?lineLength:column->length;
+
+        wcout<<wstring( lineLength ,(wchar_t)_HL_1);
+        if(i != table->colSize-1 && (column->border == RIGHT || column->border == LEFT_RIGHT || table->columns[i+1]->border == LEFT) ) wcout<<(wchar_t)_HL_1<<(wchar_t)_IT_1<<(wchar_t)_HL_1; else wcout<<(wchar_t)_HL_1;
+        
+        currPosition.Y += 1;
+        SetConsoleCursorPosition(handle, currPosition);
+        
+        if(i != table->colSize-1 && (column->border == RIGHT || column->border == LEFT_RIGHT) ) wcout<<(wchar_t)_E<<(wchar_t)_VL_1;
+
+        wcout<< (
+            column->_toShink?  wstring(column->header, &column->header[column->shrinkHeaderSize])  :
+            column->maxHeaderSize? wstring(column->header, &column->header[column->maxHeaderSize]) :
+            wstring(column->header, &column->header[ strlen(column->header) ])
+        );
+
+        if(i != table->colSize-1 && table->columns[i+1]->border == LEFT ) wcout<<(wchar_t)_E<<(wchar_t)_VL_1;
+
+        currPosition.Y += 1;
+        SetConsoleCursorPosition(handle, currPosition);
+
+        wcout<<wstring(lineLength,(wchar_t)_HL_1);
+        if(i != table->colSize-1 && (column->border == RIGHT || column->border == LEFT_RIGHT || table->columns[i+1]->border == LEFT) ) wcout<<(wchar_t)_HL_1<<(wchar_t)_IC_1<<(wchar_t)_HL_1; else wcout<<(wchar_t)_HL_1;
+        currPosition.Y += 1;
+
+        while( column->_curr != NULL ){
+            SetConsoleCursorPosition(handle, currPosition);
+            
+            if(i != 0 && column->border == RIGHT || column->border == LEFT_RIGHT) wcout<<(wchar_t)_E<<(wchar_t)_VL_1;
+            wcout<< column->_curr->data;
+            if(i != table->colSize-1 && table->columns[i+1]->border == LEFT ){
+                uint8_t oheaderLength = (column->_toShink? column->shrinkHeaderSize : column->maxHeaderSize? column->maxHeaderSize : strlen(column->header));
+                
+                wcout<<wstring(abs(oheaderLength-column->_curr->length),L' ');
+                wcout<<(wchar_t)_E<<(wchar_t)_VL_1;
+            }
+
+
+            column->_curr = column->_curr->_next;
+            currPosition.Y += 1;
+        }
+
+        SetConsoleCursorPosition(handle, currPosition);
+        wcout<<wstring(lineLength,(wchar_t)_HL_1);
+        if(i != table->colSize-1 && (column->border == RIGHT || column->border == LEFT_RIGHT || table->columns[i+1]->border == LEFT) ) wcout<<(wchar_t)_HL_1<<(wchar_t)_IB_1<<(wchar_t)_HL_1; else wcout<<(wchar_t)_HL_1;
+        
+        currPosition.X += lineLength;
+        currPosition.X += column->border == RIGHT || column->border == LEFT_RIGHT
+                        ||(i != table->colSize-1 && table->columns[i+1]->border == LEFT)?3: 1;
+    }
+
+    SHORT lastX = currPosition.X;
+    for(uint8_t side = 0; side <= 1; side++){
+    currPosition = basePosition;
+    if(side == 1) currPosition.X = lastX;
+    for(uint8_t i = 0; i < table->rowSize+4; i++){
+        SetConsoleCursorPosition(handle, currPosition);
+        if      (i == 0 && side == 0) wcout<<(wchar_t)_TLC_1<<(wchar_t)_HL_1;
+        else if (i == table->rowSize+3 && side == 0) wcout<<(wchar_t)_BLC_1<<(wchar_t)_HL_1;
+        else if (i == 0 && side == 1) wcout<<(wchar_t)_HL_1<<(wchar_t)_TRC_1;
+        else if (i == table->rowSize+3 && side == 1) wcout<<(wchar_t)_HL_1<<(wchar_t)_BRC_1;
+        else if (side == 1) wcout<<(wchar_t)_E<<(wchar_t)_VL_1;
+        else wcout<<(wchar_t)_VL_1;
+        currPosition.Y++;
+    }
+    }
+
 }

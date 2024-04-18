@@ -33,6 +33,7 @@ Column* createColumn(char* header, Table* table){
     column->table = table;
     column->header = header;
     column->maxHeaderSize = strlen(header);
+    column->_toShink = true;
 
     column->border = NONE;
     // table->columns[table->colSize++] = column;
@@ -42,6 +43,10 @@ Column* createColumn(char* header, Table* table){
 void addColumn(Table* table, Column* column){
     table->columns[table->colSize++] = column;
     table->length += column->length;
+
+    if(!column->_toShink && (column->maxHeaderSize != 0 && column->length < column->maxHeaderSize) ){
+        table->length += (column->maxHeaderSize - column->length);
+    }
 
     if(!column->_toShink && column->table->maxRows != 0)
     column->_toShink = (column->rowSize/table->maxRows) >= SHRINK_AT;
@@ -84,10 +89,9 @@ Row* createRow(wchar_t* data, uint8_t length){
 
     row->length = (length == 0)?wcslen(data):length;
     
-    row->data = (wchar_t*) calloc(length+1,sizeof(wchar_t));
-    // strcpy(row->data, data);
-    wcscpy(row->data,data);
-
+    row->data = (wchar_t*) calloc(row->length+1,sizeof(wchar_t));
+    wcscpy(row->data,data); 
+    
     row->_next = row->_prev = NULL;
     return row;
 }

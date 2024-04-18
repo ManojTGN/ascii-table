@@ -4,10 +4,6 @@
 
 #include "table.h"
 
-typedef struct _renderInfo{
-    
-} _renderInfo;
-
 #ifdef __cplusplus
 extern "C" {
 #endif
