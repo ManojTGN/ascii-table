@@ -1,4 +1,7 @@
 #include "ascii.h"
+#include "table.h"
+
+typedef void (*_renderTable)(Table* table);
 
 /**
  * @brief printing the content into table format
@@ -199,8 +202,67 @@ int main(int argv, char** args){
     
     removeDuplicateChars(&params);
     sortChars(&params);
+    
+    // printData(params);
 
-    printData(params);
+    HMODULE hDLL = LoadLibrary("table.dll");
+    if(hDLL == NULL){
+        fprintf(stderr,"Failed To Load DLL");
+        return EXIT_FAILURE;
+    }
 
-    return 0;
+    _renderTable __renderTable = (_renderTable)GetProcAddress(hDLL, "_renderTable");
+    if (__renderTable == NULL) {
+        printf("Failed to get function address");
+        return EXIT_FAILURE;
+    }
+
+    Table* outputTable = createTable("AsciiTable");
+    outputTable->maxRows = 32;
+
+    Column* octalColumn = createColumn("Octal", outputTable);
+    Column* decimalColumn = createColumn("Decimal", outputTable);
+    Column* hexaColumn = createColumn("HexaDecimal", outputTable);
+    Column* charColumn = createColumn("Character", outputTable);
+
+    octalColumn->shrinkHeaderSize = decimalColumn->shrinkHeaderSize = hexaColumn->shrinkHeaderSize = 3;
+    charColumn->shrinkHeaderSize = 4;
+
+    wchar_t _tmp[60] = {0};
+    Row* _tmpRow;
+
+    for(uint8_t i = 0; i < params.contentSize; i++){
+        snwprintf(_tmp, sizeof(_tmp), L"%03o", params.content[i]);
+        _tmpRow = createRow(_tmp, 0);
+        addRow(octalColumn,_tmpRow);
+        
+        snwprintf(_tmp, sizeof(_tmp), L"%3d", params.content[i]);
+        _tmpRow = createRow(_tmp, 0);
+        addRow(decimalColumn,_tmpRow);
+
+        snwprintf(_tmp, sizeof(_tmp), L"%2X", params.content[i]);
+        _tmpRow = createRow(_tmp, 0);
+        addRow(hexaColumn,_tmpRow);
+        
+        if(isPrintable(params.content[i])){
+            snwprintf(_tmp, sizeof(_tmp),L"%c"RESET, params.content[i]);
+            _tmpRow = createRow(_tmp, 1);
+        }else{
+            char* print = getPrintable(params.content[i]);
+            snwprintf(_tmp, sizeof(_tmp),L"%s"RESET, print);
+            _tmpRow = createRow(_tmp, 0);
+        }
+
+        addRow(charColumn,_tmpRow);
+    }
+
+    addColumn(outputTable, octalColumn);
+    addColumn(outputTable, decimalColumn);
+    addColumn(outputTable, hexaColumn);
+    addColumn(outputTable, charColumn);
+
+    // renderTable(outputTable);
+    __renderTable(outputTable);
+
+    return EXIT_SUCCESS;
 }
