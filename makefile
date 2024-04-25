@@ -9,13 +9,13 @@ _test: _build
 	./test/test.exe
 
 table:
-	$(CXX) -shared -o build/table.dll src/tablePartial.cpp 
+	$(CXX) -shared -o build/renderer.dll src/renderer.cpp 
 	$(CC) -o build/table.o -c src/table.c
 
 _build: clean table
 	if [ ! -d build ]; then mkdir build; fi
 	$(CC) -o build/ascii.o -c src/ascii.c
-	$(CC) -o build/ascii.exe build/ascii.o build/table.o src/main.c -Lbuild -ltable
+	$(CC) -o build/ascii.exe build/ascii.o build/table.o src/main.c -Lbuild -lrenderer
 
 clean:
 	rm -rf build/*.o

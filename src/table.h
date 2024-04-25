@@ -9,16 +9,8 @@
 #include <windows.h>
 #include <wchar.h>
 
+#define MAX_ROWS    32
 #define MAX_COLUMNS 4
-#define SHRINK_AT   3
-
-typedef enum col_border {
-    LEFT_RIGHT  = 0b0011,
-    LEFT        = 0b0010,
-    RIGHT       = 0b0001,
-    NONE        = 0b0000
-} COL_BORDER;
-
 
 typedef struct row{
     wchar_t* data;
@@ -30,16 +22,13 @@ typedef struct row{
 
 typedef struct table Table;
 typedef struct column{
-    COL_BORDER border;
     Table* table;
 
-    char* header;
-    bool _toShink;
-    uint8_t shrinkHeaderSize;
-    uint8_t maxHeaderSize;
+    wchar_t* title;
+    uint8_t titleLength;
 
     uint8_t rowSize;
-    uint8_t length;
+    uint8_t totalLength[4];
 
     Row* head;
     Row*  end;
@@ -47,25 +36,23 @@ typedef struct column{
 } Column;
 
 typedef struct table{
-    char* header;
+    wchar_t* title;
 
-    uint8_t maxRows;
-    uint16_t length;
-    
-    uint8_t rowSize;
     uint8_t colSize;
+    uint8_t rowSize;
+    uint8_t maxRows;
+    
+    uint16_t totalLength;
 
     Column** columns;
 } Table;
 
-
 Row* createRow(wchar_t* data, uint8_t length);
 
-Column* createColumn(char* header, Table* table);
+Column* createColumn(wchar_t* title, Table* table);
 void addRow(Column* column, Row* row);
-Row* getRow(Column* column, uint16_t index);
 
-Table* createTable(char* header);
+Table* createTable(wchar_t* title);
 void addColumn(Table* table, Column* column);
 
 void renderTable(Table* table);

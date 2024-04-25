@@ -203,30 +203,27 @@ int main(int argv, char** args){
     removeDuplicateChars(&params);
     sortChars(&params);
     
-    // printData(params);
-
-    HMODULE hDLL = LoadLibrary("table.dll");
+    HMODULE hDLL = LoadLibrary("renderer.dll");
     if(hDLL == NULL){
-        fprintf(stderr,"Failed To Load DLL");
+        printf("WARN: Renderer Not Found\n");
+        printData(params);
         return EXIT_FAILURE;
     }
 
     _renderTable __renderTable = (_renderTable)GetProcAddress(hDLL, "_renderTable");
     if (__renderTable == NULL) {
-        printf("Failed to get function address");
+        printf("WARN: Renderer Not Loaded\n");
+        printData(params);
         return EXIT_FAILURE;
     }
 
-    Table* outputTable = createTable("AsciiTable");
+    Table* outputTable = createTable(L"AsciiTable");
     outputTable->maxRows = 32;
 
-    Column* octalColumn = createColumn("Octal", outputTable);
-    Column* decimalColumn = createColumn("Decimal", outputTable);
-    Column* hexaColumn = createColumn("HexaDecimal", outputTable);
-    Column* charColumn = createColumn("Character", outputTable);
-
-    octalColumn->shrinkHeaderSize = decimalColumn->shrinkHeaderSize = hexaColumn->shrinkHeaderSize = 3;
-    charColumn->shrinkHeaderSize = 4;
+    Column* octalColumn = createColumn(L"Octal", outputTable);
+    Column* decimalColumn = createColumn(L"Decimal", outputTable);
+    Column* hexaColumn = createColumn(L"HexaDecimal", outputTable);
+    Column* charColumn = createColumn(L"Character", outputTable);
 
     wchar_t _tmp[60] = {0};
     Row* _tmpRow;
