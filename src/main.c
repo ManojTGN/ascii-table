@@ -8,7 +8,6 @@ typedef void (*_renderTable)(asciiParams params);
  * @param params 
  */
 void renderTable(asciiParams params){
-
     uint8_t col = (params.contentSize%MAX_ROW) == 0?(params.contentSize/MAX_ROW):(params.contentSize/MAX_ROW)+1;
     uint8_t row = col > 1?MAX_ROW:params.contentSize;
     
@@ -221,8 +220,8 @@ int main(int argv, char** _args){
         return EXIT_SUCCESS;
     }
 
-    renderTable(params);
-    // __renderTable(params);
+    // renderTable(params);
+    __renderTable(params);
 
     return EXIT_SUCCESS;
 }
