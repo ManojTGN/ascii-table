@@ -1,17 +1,16 @@
-// DLLExample.h
-#ifndef _PARTIALS_H_
-#define _PARTIALS_H_
+#ifndef _RENDERER_H_
+#define _RENDERER_H_
 
-#include "table.h"
+#include "ascii.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-__declspec(dllexport) void _renderTable(Table* table);
+__declspec(dllexport) void _renderTable(asciiParams params);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /*_PARTIALS_H_*/
+#endif /*_RENDERER_H_*/
