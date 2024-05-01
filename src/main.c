@@ -71,23 +71,23 @@ void renderTable(asciiParams params){
                 i=(i/2);
             }
             
-            snwprintf(tmp, sizeof(tmp), L"%s  ",  binStr);
+            snwprintf(tmp, sizeof(tmp), L"%ls  ",  binStr);
             wcscat(lines[currRow],tmp);
         }
 
         if(isPrintable(params.content[s])){
-            snwprintf(tmp, sizeof(tmp),s%2==0?L""YEL"%c "RESET:L""GOLD"%c "RESET, params.content[s]);
+            snwprintf(tmp, sizeof(tmp),L""YEL"%c "RESET, params.content[s]);
             currLineLength = 0;
         }else{
             wchar_t* print = getPrintable(params.content[s]);
             currLineLength = wcslen(print) - 3;
-            snwprintf(tmp, sizeof(tmp),s%2==0?L""YEL"%s"RESET:L""GOLD"%s"RESET, print);
+            snwprintf(tmp, sizeof(tmp),L""YEL"%ls"RESET, print);
         }
         if(params.onlyChar || params._onlyAll) wcscat(lines[currRow],tmp);
 
         if(currCol != col){
             wchar_t* spaces = (wchar_t*)calloc( (size_t)maxLength[currCol-1] - currLineLength +1,sizeof(wchar_t));
-            memset(spaces, (wchar_t)32, sizeof(wchar_t) * (size_t)maxLength[currCol-1] - currLineLength);
+            wmemset(spaces, (wchar_t)32, (size_t)maxLength[currCol-1] - currLineLength);
 
             wcscat(lines[currRow],spaces);
             wcscat(lines[currRow],currLineLength == 0?L"  |  ":L" |  ");
@@ -128,7 +128,7 @@ void renderTable(asciiParams params){
     }wprintf(L"\n"RESET);
 
     for(uint8_t i = 0; i < row; i++){
-        wprintf(L"%s\n"RESET,lines[i]);
+        wprintf(L"%ls\n"RESET,lines[i]);
     }wprintf(L""RESET);
 
     for(uint8_t i = 0; i < col; i++){
@@ -153,17 +153,12 @@ int main(int argv, char** _args){
         size_t wide_len = strlen(_args[i]) + 1;
         args[i] = (wchar_t *)calloc( wide_len, sizeof(wchar_t));
 
-        for(uint8_t j = 0; j < wide_len; j++){
-            args[i][j] = (wchar_t)_args[i][j];
-            wprintf(L"[%c ",args[i][j]);
-            wprintf(L"%s] ",args[i]);
-        }
-
-        wprintf(L" content:%s;%d\nwcontent:%s;%d\n\n",_args[i],wide_len,args[i],wcslen(args[i]));
+        for(uint8_t j = 0; j < wide_len; j++)
+        args[i][j] = (wchar_t)_args[i][j];
     }
     
     asciiParams params = parseParameter(argv, args);
-    
+
     if(params.color){
         system("REG ADD HKCU\\CONSOLE /f /v VirtualTerminalLevel /t REG_DWORD /d 1");
         return 0;
@@ -183,17 +178,17 @@ int main(int argv, char** _args){
         free(cpy);
 
         if(params.showAllAlphas || params.showAll){
-            wcscpy(params.content,L"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
+            wcscat(params.content,L"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
             params.contentSize += params.showAllAlphas;
         }
 
         if(params.showAllDigits|| params.showAll){
-            wcscpy(params.content,L"0123456789");
+            wcscat(params.content,L"0123456789");
             params.contentSize += params.showAllDigits;
         }
 
         if(params.showSpecialChars || params.showAll){
-            wcscpy(params.content,L" !\"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~");
+            wcscat(params.content,L" !\"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~");
             params.contentSize += params.showSpecialChars;
         }
 
@@ -213,7 +208,7 @@ int main(int argv, char** _args){
     
     removeDuplicateChars(&params);
     sortChars(&params);
-    
+
     HMODULE hDLL = LoadLibrary("renderer.dll");
     if(hDLL == NULL){
         renderTable(params);
@@ -225,7 +220,7 @@ int main(int argv, char** _args){
         renderTable(params);
         return EXIT_SUCCESS;
     }
-    
+
     renderTable(params);
     // __renderTable(params);
 
