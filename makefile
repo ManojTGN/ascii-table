@@ -8,13 +8,16 @@ _test: _build
 	$(CC) -o test/test.exe build/ascii.o test/test.c
 	./test/test.exe
 
+rc:
+	windres ascii.rc -o build/asciirc.o
+
 renderer:
 	$(CXX) -shared -o build/renderer.dll src/renderer.cpp -Wno-write-strings
 
-_build: clean renderer
+_build: clean renderer rc
 	if [ ! -d build ]; then mkdir build; fi
 	$(CC) -o build/ascii.o -c src/ascii.c
-	$(CC) -o build/ascii.exe build/ascii.o src/main.c -Lbuild -lrenderer
+	$(CC) -o build/ascii.exe build/ascii.o src/main.c -Lbuild -lrenderer build/asciirc.o
 
 clean:
 	rm -rf build/*.o
