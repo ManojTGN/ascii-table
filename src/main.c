@@ -203,7 +203,7 @@ int main(int argv, char** _args){
         return 0;
     }
 
-    if(params.showAll) wprintf(L"ascii - ASCII character set encoded in octal, decimal, and hexadecimal\n");
+    if(params.showAll) wprintf(L" ascii - ASCII character set encoded in octal, decimal, and hexadecimal\n");
     
     removeDuplicateChars(&params);
     sortChars(&params);

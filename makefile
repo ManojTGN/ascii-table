@@ -9,7 +9,7 @@ _test: _build
 	./test/test.exe
 
 renderer:
-	$(CXX) -shared -o build/renderer.dll src/renderer.cpp
+	$(CXX) -shared -o build/renderer.dll src/renderer.cpp -Wno-write-strings
 
 _build: clean renderer
 	if [ ! -d build ]; then mkdir build; fi

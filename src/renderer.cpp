@@ -163,6 +163,12 @@ void _renderTable(asciiParams params){
 
     uint16_t colLineLength = (params.onlyOct || params._onlyAll?5:0) + (params.onlyDec || params._onlyAll?5:0) + (params.onlyHex || params._onlyAll?5:0) + (params.onlyBin /*|| params._onlyAll*/?11:0) + (params.onlyChar || params._onlyAll?5:0);
     
+    wcout<<(wchar_t)_E;
+    for(uint8_t i = 0; i < col; i++){
+        wcout<<wstring(maxLength[i],(wchar_t)_HL_1)<<wstring( (params._onlyAll?(params.onlyBin?19+11:19):(params.onlyDec?5:0) + (params.onlyOct?5:0) + (params.onlyHex?5:0) + (params.onlyBin?10:0) + (params.onlyChar?4:0)),(wchar_t)_HL_1 );
+        if(col-1 != i) wcout<<(wchar_t)_IT_1<<(wchar_t)_HL_1<<(wchar_t)_HL_1;        
+    }wcout<<"\n" RESET<<(wchar_t)_E;
+
     for(uint8_t i = 0; i < col; i++){
         if(params.onlyOct || params._onlyAll)  wcout<<"Oct  ";
         if(params.onlyDec || params._onlyAll)  wcout<<"Dec  ";
@@ -173,7 +179,7 @@ void _renderTable(asciiParams params){
         if(col != i+1){
             wcout<<(wchar_t)_E<<wstring(maxLength[i],(wchar_t)_E)<<(wchar_t)_VL_1<<(wchar_t)_E<<(wchar_t)_E;
         }
-    }wcout<<"\n" RESET;
+    }wcout<<"\n" RESET<<(wchar_t)_E;
 
     for(uint8_t i = 0; i < col; i++){
         wcout<<wstring(maxLength[i],(wchar_t)_HL_1)<<wstring( (params._onlyAll?(params.onlyBin?19+11:19):(params.onlyDec?5:0) + (params.onlyOct?5:0) + (params.onlyHex?5:0) + (params.onlyBin?10:0) + (params.onlyChar?4:0)),(wchar_t)_HL_1 );
@@ -181,8 +187,8 @@ void _renderTable(asciiParams params){
     }wcout<<"\n" RESET;
 
     for(uint8_t i = 0; i < row; i++){
-        wcout<<lines[i]<<endl<<RESET;
-    }wcout<<RESET;
+        wcout<<(wchar_t)_E<<lines[i]<<endl<<RESET;
+    }wcout<<RESET<<(wchar_t)_E;
 
     for(uint8_t i = 0; i < col; i++){
         wcout<<wstring(maxLength[i],(wchar_t)_HL_1)<<wstring( (params._onlyAll?(params.onlyBin?19+11:19):(params.onlyDec?5:0) + (params.onlyOct?5:0) + (params.onlyHex?5:0) + (params.onlyBin?10:0) + (params.onlyChar?4:0)),(wchar_t)_HL_1 );
