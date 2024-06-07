@@ -8,8 +8,9 @@
 int main(){
 
     //YEL RESET
-    assert( strcmp(YEL,  "\x1b[33m")== 0 );
-    assert( strcmp(RESET,"\x1b[0m" )== 0 );
+    assert( strcmp(YEL,   "\x1B[38;5;172m")== 0 );
+    assert( strcmp(GRAY,  "\x1B[38;5;243m")== 0 );
+    assert( strcmp(RESET, "\x1b[0m")== 0 );
 
     // isHex()
     assert( isHex("0x00") == true );

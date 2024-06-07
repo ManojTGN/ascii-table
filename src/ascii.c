@@ -7,8 +7,8 @@
  * @param _hexadecimal char* (string)
  * @return uint8_t 
  */
-uint8_t isHex( char* _hexadecimal ){
-    return strlen(_hexadecimal) >= 3 && _hexadecimal[0]=='0' && (_hexadecimal[1]=='x'||_hexadecimal[1]=='X');
+uint8_t isHex( wchar_t* _hexadecimal ){
+    return wcslen(_hexadecimal) >= 3 && _hexadecimal[0]==L'0' && (_hexadecimal[1]==L'x'||_hexadecimal[1]==L'X');
 }
 
 /**
@@ -18,10 +18,10 @@ uint8_t isHex( char* _hexadecimal ){
  * @param _octal char* (string)
  * @return uint8_t 
  */
-uint8_t isOct( char* _octal ){
-    if(strlen(_octal) <= 1 || _octal[strlen(_octal)-1] != 'o') return 0;
+uint8_t isOct( wchar_t* _octal ){
+    if(wcslen(_octal) <= 1 || _octal[wcslen(_octal)-1] != L'o') return 0;
     
-    for(uint8_t i = 0; i < strlen(_octal)-1; i++){
+    for(uint8_t i = 0; i < wcslen(_octal)-1; i++){
         if(!(_octal[i] >= 48 && _octal[i] <= 55)) return 0;
     }
 
@@ -35,10 +35,10 @@ uint8_t isOct( char* _octal ){
  * @param _binary char* (string)
  * @return uint8_t 
  */
-uint8_t isBin( char* _binary ){
-    if(strlen(_binary) <= 1 || _binary[strlen(_binary)-1] != 'b') return 0;
+uint8_t isBin( wchar_t* _binary ){
+    if(wcslen(_binary) <= 1 || _binary[wcslen(_binary)-1] != L'b') return 0;
 
-    for(uint8_t i = 0; i < strlen(_binary)-1; i++){
+    for(uint8_t i = 0; i < wcslen(_binary)-1; i++){
         if(!(_binary[i] == 48 || _binary[i] == 49)) return 0;
     }
 
@@ -52,10 +52,10 @@ uint8_t isBin( char* _binary ){
  * @param _binary char* (string)
  * @return uint8_t 
  */
-uint8_t isDec( char* _decimal ){
-    if(strlen(_decimal) <= 1 || _decimal[strlen(_decimal)-1] != 'd') return 0;
+uint8_t isDec( wchar_t* _decimal ){
+    if(wcslen(_decimal) <= 1 || _decimal[wcslen(_decimal)-1] != L'd') return 0;
 
-    for(uint8_t i = 0; i < strlen(_decimal)-1; i++){
+    for(uint8_t i = 0; i < wcslen(_decimal)-1; i++){
         if(!(_decimal[i] >= 48 && _decimal[i] <= 57)) return 0;
     }
 
@@ -70,7 +70,7 @@ uint8_t isDec( char* _decimal ){
  * @param args char** (string[])
  * @return asciiParams 
  */
-asciiParams parseParameter(int argv, char** args){
+asciiParams parseParameter(int argv, wchar_t** args){
     asciiParams params = {0};
     if(argv <= 1){
         params.order = 1;
@@ -79,43 +79,43 @@ asciiParams parseParameter(int argv, char** args){
 
     for(uint8_t i = 1; i < argv; i++){
 
-        if(!(strlen(args[i]) >= 2 && args[i][0] == '-' && args[i][1] == '-')){
+        if(!(wcslen(args[i]) >= 2 && args[i][0] == L'-' && args[i][1] == L'-')){
         
             uint8_t base = 0;
             if( (base = isHex(args[i])) || (base = isOct(args[i])) || (base = isBin( args[i])) || (base = isDec( args[i])) ){
-                uint8_t number = (uint8_t) strtol(args[i],NULL,isHex(args[i])?0:base);
+                wchar_t number = (wchar_t) wcstol(args[i],NULL,isHex(args[i])?0:base);
                 
                 free(args[i]);
-                args[i] = (uint8_t*) calloc(2,sizeof(uint8_t));
+                args[i] = (wchar_t*) calloc(2,sizeof(wchar_t));
 
                 args[i][0] = number;
-                args[i][1] = '\0';
+                args[i][1] = L'\0';
                 params.contentSize++;
-            }else params.contentSize += strlen(args[i]);
+            }else params.contentSize += wcslen(args[i]);
 
-            if(params.content == NULL) params.content = (uint8_t*)args[i];
-            else strcat(params.content,(uint8_t*) args[i]);
-            
+            if(params.content == NULL) params.content = (wchar_t*)args[i];
+            else wcscat(params.content,(wchar_t*) args[i]);
+
             continue;
         }
 
-        if     (strcmp(args[i],"--all") == 0)    params.showAll = 128;
-        else if(strcmp(args[i],"--digits") == 0) params.showAllDigits = 10;
-        else if(strcmp(args[i],"--alphas") == 0) params.showAllAlphas = 52;
+        if     (wcscmp(args[i],L"--all") == 0)    params.showAll = 128;
+        else if(wcscmp(args[i],L"--digits") == 0) params.showAllDigits = 10;
+        else if(wcscmp(args[i],L"--alphas") == 0) params.showAllAlphas = 52;
 
-        else if(strcmp(args[i],"--controls") == 0) params.showControlChars = 33;
-        else if(strcmp(args[i],"--specials") == 0) params.showSpecialChars = 33;
+        else if(wcscmp(args[i],L"--controls") == 0) params.showControlChars = 33;
+        else if(wcscmp(args[i],L"--specials") == 0) params.showSpecialChars = 33;
 
-        else if(strcmp(args[i],"--octa") == 0) params.onlyOct = true;
-        else if(strcmp(args[i],"--dec") == 0) params.onlyDec = true;
-        else if(strcmp(args[i],"--hex") == 0) params.onlyHex = true;
-        // else if(strcmp(args[i],"--char") == 0) params.onlyChar = true;
+        else if(wcscmp(args[i],L"--octa") == 0) params.onlyOct = true;
+        else if(wcscmp(args[i],L"--dec") == 0) params.onlyDec = true;
+        else if(wcscmp(args[i],L"--hex") == 0) params.onlyHex = true;
+        else if(wcscmp(args[i],L"--bin") == 0) params.onlyBin = true;
+        // else if(wcscmp(args[i],L"--char") == 0) params.onlyChar = true;
 
-        else if(strcmp(args[i],"--asc")==0)  params.order = 1;
-        else if(strcmp(args[i],"--desc")==0) params.order = 2;
+        else if(wcscmp(args[i],L"--asc")==0)  params.order = 1;
+        else if(wcscmp(args[i],L"--desc")==0) params.order = 2;
 
-        else if(strcmp(args[i],"--vt100")==0) params.color = true;
-
+        else if(wcscmp(args[i],L"--vt100")==0) params.color = true;
     }
 
     params.onlyChar = 1; //hardcoded;
@@ -139,9 +139,11 @@ asciiParams parseParameter(int argv, char** args){
  * @param params asciiParams*
  */
 void removeDuplicateChars(asciiParams *params){
-    uint8_t occur[256] = {0};int i;int idx = 0;
+    wchar_t occur[256] = {0};int i;int idx = 0;
+
     for(i = 0; i < params->contentSize; i++){
         if(!occur[params->content[i]]){
+
             if(idx != i){
                 params->content[idx] = params->content[i];
             }
@@ -153,16 +155,16 @@ void removeDuplicateChars(asciiParams *params){
 
     if(idx == params->contentSize) return;
 
-    uint8_t* tmp = (uint8_t *)calloc(idx ,sizeof(uint8_t));
+    wchar_t* tmp = (wchar_t *)calloc(idx ,sizeof(wchar_t));
     params->contentSize = idx;
 
-    strncpy(tmp, params->content, idx);tmp[idx] = '\0';
-    free(params->content);
+    wcsncpy(tmp, params->content, idx);tmp[idx] = '\0';
+    // free(params->content);
     params->content = tmp;
 }
 
-static int ascCmp(const void* a, const void* b){return *(uint8_t *)a - *(uint8_t *)b;}
-static int desCmp(const void* a, const void* b){return *(uint8_t *)b - *(uint8_t *)a;}
+static int ascCmp(const void* a, const void* b){return *(wchar_t *)a - *(wchar_t *)b;}
+static int desCmp(const void* a, const void* b){return *(wchar_t *)b - *(wchar_t *)a;}
 
 /**
  * @brief sort the input content in ascending / descending order
@@ -172,8 +174,8 @@ static int desCmp(const void* a, const void* b){return *(uint8_t *)b - *(uint8_t
  */
 void sortChars(asciiParams *params){
     if(params->order){
-        if(params->order == 1) qsort(params->content, params->contentSize, sizeof(uint8_t), ascCmp);
-        else qsort(params->content, params->contentSize, sizeof(uint8_t), desCmp);
+        if(params->order == 1) qsort(params->content, params->contentSize, sizeof(wchar_t), ascCmp);
+        else qsort(params->content, params->contentSize, sizeof(wchar_t), desCmp);
     }
 }
 
@@ -184,7 +186,7 @@ void sortChars(asciiParams *params){
  * @param character 
  * @return bool 
  */
-bool isPrintable(uint8_t character){
+bool isPrintable(wchar_t character){
     return !(character >= 0 && character <= 32 || character == 127);
 }
 
@@ -192,47 +194,47 @@ bool isPrintable(uint8_t character){
  * @brief Get the printable custom value for non printable characters
  * 
  * @param content 
- * @return uint8_t* 
+ * @return wchar_t* 
  */
-uint8_t* getPrintable(uint8_t content){
-    if(!(content >= 0 && content <= 32 || content == 127)) return "   ";
+wchar_t* getPrintable(wchar_t content){
+    if(!(content >= 0 && content <= 32 || content == 127)) return L"   ";
 
     switch (content){
-    case 0: return   "NUL (null)";
-    case 1: return   "SOH (start of heading)";
-    case 2: return   "STX (start of text)";
-    case 3: return   "ETX (end of text)";
-    case 4: return   "EOT (end of transmission)";
-    case 5: return   "ENQ (enquiry)";
-    case 6: return   "ACK (acknowledge)";
-    case 7: return   "BEL (bell)";
-    case 8: return   "BS  (backspace)";
-    case 9: return   "TAB (horizontal tab)";
-    case 10: return  "LF  (NL line feed, new line)";
-    case 11: return  "VT  (vertical tab)";
-    case 12: return  "FF  (NP form feed, new page)";
-    case 13: return  "CR  (carriage return)";
-    case 14: return  "SO  (shift out)";
-    case 15: return  "SI  (shift in)";
-    case 16: return  "DLE (data link escape)";
-    case 17: return  "DC1 (device control 1)";
-    case 18: return  "DC2 (device control 2)";
-    case 19: return  "DC3 (device control 3)";
-    case 20: return  "DC4 (device control 4)";
-    case 21: return  "NAK (negative acknowledge)";
-    case 22: return  "SYN (synchronous idle)";
-    case 23: return  "ETB (end of trans. block)";
-    case 24: return  "CAN (cancel)";
-    case 25: return  "EM  (end of medium)";
-    case 26: return  "SUB (substitute)";
-    case 27: return  "ESC (escape)";
-    case 28: return  "FS  (file separator)";
-    case 29: return  "GS  (group separator)";
-    case 30: return  "RS  (record separator)";
-    case 31: return  "US  (unit separator)";
-    case 32: return  "SPACE";
-    case 127:return  "DEL (delete control)";
-    default: return "   ";
+    case 0: return   L"NUL (null)";
+    case 1: return   L"SOH (start of heading)";
+    case 2: return   L"STX (start of text)";
+    case 3: return   L"ETX (end of text)";
+    case 4: return   L"EOT (end of transmission)";
+    case 5: return   L"ENQ (enquiry)";
+    case 6: return   L"ACK (acknowledge)";
+    case 7: return   L"BEL (bell)";
+    case 8: return   L"BS  (backspace)";
+    case 9: return   L"TAB (horizontal tab)";
+    case 10: return  L"LF  (NL line feed, new line)";
+    case 11: return  L"VT  (vertical tab)";
+    case 12: return  L"FF  (NP form feed, new page)";
+    case 13: return  L"CR  (carriage return)";
+    case 14: return  L"SO  (shift out)";
+    case 15: return  L"SI  (shift in)";
+    case 16: return  L"DLE (data link escape)";
+    case 17: return  L"DC1 (device control 1)";
+    case 18: return  L"DC2 (device control 2)";
+    case 19: return  L"DC3 (device control 3)";
+    case 20: return  L"DC4 (device control 4)";
+    case 21: return  L"NAK (negative acknowledge)";
+    case 22: return  L"SYN (synchronous idle)";
+    case 23: return  L"ETB (end of trans. block)";
+    case 24: return  L"CAN (cancel)";
+    case 25: return  L"EM  (end of medium)";
+    case 26: return  L"SUB (substitute)";
+    case 27: return  L"ESC (escape)";
+    case 28: return  L"FS  (file separator)";
+    case 29: return  L"GS  (group separator)";
+    case 30: return  L"RS  (record separator)";
+    case 31: return  L"US  (unit separator)";
+    case 32: return  L"SPACE";
+    case 127:return  L"DEL (delete control)";
+    default: return  L"   ";
     }
 }
 

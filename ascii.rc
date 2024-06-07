@@ -17,12 +17,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName",      "AceContra\0"
             VALUE "FileDescription",  "AsciiTable shows octal, hexadecimal, and decimal representations of ascii characters\0"
-            VALUE "FileVersion",      "0.4.1.7\0"
+            VALUE "FileVersion",      "0.5.0.0\0"
             VALUE "InternalName",     "acecontra.ascii-table\0"
             VALUE "LegalCopyright",   "AceContra\0"
             VALUE "OriginalFilename", "ascii_x64.exe\0"
             VALUE "ProductName",      "asciiTable\0"
-            VALUE "ProductVersion",   "0.4.1.0\0"
+            VALUE "ProductVersion",   "0.5.0.0\0"
         END
     END
     BLOCK "VarFileInfo"

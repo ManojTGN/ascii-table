@@ -1,16 +1,21 @@
+#ifndef _ASCII_H_
+#define _ASCII_H_
+
 #include <stdio.h>
 #include <stdlib.h>
 
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
+#include <locale.h>
 
-#ifndef _ASCII_H_
-#define _ASCII_H_
+#include <windows.h>
+#include <wchar.h>
 
 #define MAX_COL 4
 #define MAX_ROW 32
-#define YEL     "\x1b[33m"
+#define GRAY "\x1B[38;5;243m"
+#define YEL  "\x1B[38;5;172m"
 #define RESET   "\x1b[0m"
 
 typedef struct parameter{
@@ -27,25 +32,26 @@ typedef struct parameter{
 
     bool onlyChar;          // hardcoded and set to true(1) always shows `chr` column
     bool _onlyAll;          // if all only* 3 are false this will be set to true
+    bool onlyBin;           //--bin  shows Binary in output table
     
-    uint8_t* content;       // " " content / data (user input)
+    wchar_t* content;       // " " content / data (user input)
     uint16_t contentSize;   // content size 
     
     uint8_t order;          //0 - default , (--asc)1 - ascending, (--des)2 - desending ordered output table
     bool color;             //--vt100 register ansi vt100 escape sequence color to the terminal
 }asciiParams;
 
-uint8_t isHex( char* _hexadecimal );
-uint8_t isOct( char* _octal );
-uint8_t isBin( char* _binary );
-uint8_t isDec( char* _decimal );
+uint8_t isHex( wchar_t* _hexadecimal );
+uint8_t isOct( wchar_t* _octal );
+uint8_t isBin( wchar_t* _binary );
+uint8_t isDec( wchar_t* _decimal );
 
-asciiParams parseParameter(int argv, char** args);
+asciiParams parseParameter(int argv, wchar_t** args);
 void removeDuplicateChars(asciiParams *params);
 void sortChars(asciiParams *params);
 
-bool isPrintable(uint8_t character);
-uint8_t* getPrintable(uint8_t content);
+bool isPrintable(wchar_t character);
+wchar_t* getPrintable(wchar_t content);
 
 static int ascCmp(const void* a, const void* b);
 static int desCmp(const void* a, const void* b);

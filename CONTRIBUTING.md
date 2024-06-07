@@ -15,7 +15,7 @@ There are several ways you can contribute to this project:
 To get started contributing to Ascii-Table, follow these steps:
 
 1. Fork the repository and clone it to your local machine.
-3. Make your changes and commit them: `git commit -m "Add new feature"`.
+3. Make your changes in the `ascii-table-contribute` branch and commit them: `git commit -m "Add new feature"`.
 4. Push your changes to your fork: `git push origin my-contribution`.
 5. Submit a pull request with a description of your changes. `that simple ;)`
 

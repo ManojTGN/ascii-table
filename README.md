@@ -2,11 +2,11 @@
 ![asciitable](https://github.com/ManojTGN/ascii-table/assets/42494649/ab86ba7e-6085-464c-9ff2-c76e6aa661e6)
 
 ## Overview
-AsciiTable shows octal, hexadecimal, and decimal representations of ascii characters. It supports all 8-bit ASCII characters. But 7-bit ASCII characters are prefered to be processed.
-![Capture](https://github.com/ManojTGN/ascii-table/assets/42494649/bb0fc8f0-6163-4cc9-a1b4-4364950295e2)
+AsciiTable shows octal, hexadecimal, decimal and binary representations of ascii characters. It supports all 8-bit(256) ASCII characters. But 7-bit(128) ASCII characters are prefered to be processed.
+![asciitable](https://github.com/ManojTGN/ascii-table/assets/42494649/c140c32a-6315-424a-a4cd-62924970acac)
 
 ## Features
-- Converts ASCII characters to octal, hexadecimal, and decimal values.
+- Converts ASCII characters to octal, hexadecimal, decimal and binary values.
 - Simple and lightweight command-line interface.
 - Supports the full range of 256 ASCII characters.
 
@@ -38,6 +38,7 @@ ascii [characters...] [..options]
     `--octa`    shows only octa in output table
     `--dec`     shows only dec in output table
     `--hex`     shows only hex in output table
+    `--bin`     shows binary in output table
     
     `--asc`     shows output table in ascending order
     `--desc`    shows output table in desending order
@@ -70,6 +71,8 @@ ascii --all
 
 ascii "show octal & decimal" --octa --dec
 ascii "show only hex" --hex
+ascii "add binary representation" --bin
+ascii "show only octa & also bin" --octa --bin
 
 ascii --vt100
 
